@@ -49,5 +49,21 @@ stages:
 cd ../go-simulator && go run ./cmd/simulate -rules climate.yaml -output results
 ```
 
-The climate does not change with time yet: seasons (a moving snow line, the colours of the year)
-are the next step.
+## Seasons
+
+The `seasons` rule turns the year on any clock: the temperature swings around its mean, so the snow
+line climbs and comes down, and foliage takes the colour of the season (environment: snow and
+foliage tint, which go-renderer draws on lit surfaces and on materials marked as foliage).
+
+```yaml
+- rule: seasons
+  with:
+    year_length: 12          # units of the stage's time (months here; seconds on a real-time clock)
+    warmest: 0.35
+    temperature: {sea_level: 12, lapse: 6.5, amplitude: 9}
+    snow_at: 0
+    foliage:
+      - {at: 0.0, color: "#9cc35a", amount: 0.25}
+      - {at: 0.55, color: "#c98a2f", amount: 0.55}
+      - {at: 0.85, color: "#7a6e5f", amount: 0.6}
+```

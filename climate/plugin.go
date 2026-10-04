@@ -19,8 +19,8 @@ func Plugin() *plugin.Plugin {
 	return &plugin.Plugin{
 		Name:    "climate",
 		Version: Version,
-		Summary: "Yearly temperature and rain over a relief, and the biome of every place.",
-		Rules:   []plugin.Definition{climateRule()},
+		Summary: "Yearly temperature and rain over a relief, the biome of every place, and the turning seasons.",
+		Rules:   []plugin.Definition{climateRule(), seasonsRule()},
 	}
 }
 
