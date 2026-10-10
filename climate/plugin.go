@@ -203,7 +203,7 @@ func fieldOf(name string, grid *Grid, origin [2]float64) *world.FieldPatch {
 		values[index] = float32(value)
 	}
 	east, south := grid.West+float64(grid.Columns)*grid.Cell, grid.North-float64(grid.Rows)*grid.Cell
-	extent := &world.Extent{MinimumX: float32(grid.West - origin[0]), MaximumX: float32(east - origin[0]),
-		MinimumZ: float32(origin[1] - grid.North), MaximumZ: float32(origin[1] - south)}
+	extent := &world.Extent{MinimumX: grid.West - origin[0], MaximumX: east - origin[0],
+		MinimumZ: origin[1] - grid.North, MaximumZ: origin[1] - south}
 	return &world.FieldPatch{Name: name, Columns: grid.Columns, Rows: grid.Rows, Extent: extent, Values: values}
 }
