@@ -75,7 +75,7 @@ biomes:
   - {biome: steppe}                       # no conditions: everything left
 ```
 
-Conditions use go-simulator's [condition language](https://github.com/akrck02/go-3d-simulator/blob/feature/simuladores-genericos/docs/vocabulary.md#conditions)
+Conditions use go-simulator's [condition language](https://github.com/akrck02/go-simulator/blob/feature/simuladores-genericos/docs/vocabulary.md#conditions)
 over the facts of a cell: `temperature`, `precipitation` (mm), `height` (m), `slope` (rise over
 run), `river_area` (km² drained), and the yes/no facts `river` and `coast`. An unknown fact is an
 error.

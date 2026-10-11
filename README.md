@@ -3,7 +3,7 @@
 ![Temperature, rain and biomes of a made-up island](docs/img/climate.jpg)
 
 
-A [go-simulator](https://github.com/akrck02/go-3d-simulator) plugin that works out the climate of a relief and the biome of
+A [go-simulator](https://github.com/akrck02/go-simulator) plugin that works out the climate of a relief and the biome of
 every place: temperature falls with height, moist wind drops its rain on the slopes it climbs and
 leaves a rain shadow behind, and biome rules over temperature, rain, slope, rivers and coast give
 every place its biome. A `seasons` rule turns the year: snow line and foliage colour.
