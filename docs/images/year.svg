@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 880 380" width="880" height="380" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <style>
+    .bg { fill: #ffffff; }
+    .box { fill: #f6f8fa; stroke: #d0d7de; }
+    .title { fill: #1f2328; font-size: 15px; font-weight: 600; }
+    .text { fill: #59636e; font-size: 12.5px; }
+    .small { fill: #59636e; font-size: 11px; }
+    .label { fill: #59636e; font-size: 11px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .grid { stroke: #d0d7de; stroke-width: 1; fill: none; }
+    .faint { stroke: #d0d7de; stroke-width: 1; fill: none; stroke-dasharray: 3 4; }
+    .water { fill: #cfe3f3; }
+    .frame { fill: none; stroke: #d0d7de; stroke-width: 1; }
+    .ground { fill: #b9c7a3; stroke: #6f8a55; stroke-width: 1.2; }
+    .rainarea { fill: #0969da; fill-opacity: 0.16; stroke: #0969da; stroke-width: 2; }
+    .line1 { stroke: #0969da; fill: none; stroke-width: 2; }
+    .line2 { stroke: #bc4c00; fill: none; stroke-width: 2; }
+    .dashed { stroke: #8c959f; stroke-width: 1.2; fill: none; stroke-dasharray: 5 4; }
+    .snowfill { fill: #8c959f; fill-opacity: 0.14; }
+    .ink { fill: #1f2328; } .inkline { stroke: #1f2328; fill: none; stroke-width: 1.6; }
+    .outline { stroke: #1f2328; stroke-width: 1.6; fill: none; stroke-dasharray: 6 4; }
+    .swatchline { stroke: #1f2328; stroke-opacity: 0.25; stroke-width: 1; }
+    @media (prefers-color-scheme: dark) {
+      .bg { fill: #0d1117; }
+      .box { fill: #161b22; stroke: #30363d; }
+      .title { fill: #e6edf3; }
+      .text, .label, .small { fill: #9198a1; }
+      .grid { stroke: #30363d; } .faint { stroke: #3d444d; }
+      .water { fill: #12304d; }
+      .frame { stroke: #30363d; }
+      .ground { fill: #3a4a33; stroke: #8fae72; }
+      .rainarea { fill: #4493f8; fill-opacity: 0.22; stroke: #4493f8; }
+      .line1 { stroke: #4493f8; } .line2 { stroke: #f0883e; }
+      .dashed { stroke: #6e7681; }
+      .snowfill { fill: #e6edf3; fill-opacity: 0.10; }
+      .ink { fill: #e6edf3; } .inkline { stroke: #e6edf3; }
+      .outline { stroke: #e6edf3; }
+      .swatchline { stroke: #e6edf3; stroke-opacity: 0.3; }
+    }
+  </style>
+  <defs>
+    <marker id="headink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="ink" d="M0,0 L10,5 L0,10 z"/></marker>
+  </defs>
+  <rect class="bg" width="880" height="380" rx="12"/>
+  <text class="title" x="24.0" y="30.0" text-anchor="start">A year of seasons: the snow line and the colour of the leaves</text>
+  <path class="grid" d="M70,250.0 H830"/>
+  <text class="label" x="62.0" y="254.0" text-anchor="end">0 km</text>
+  <path class="grid" d="M70,196.9 H830"/>
+  <text class="label" x="62.0" y="200.9" text-anchor="end">1 km</text>
+  <path class="grid" d="M70,143.7 H830"/>
+  <text class="label" x="62.0" y="147.7" text-anchor="end">2 km</text>
+  <path class="grid" d="M70,90.6 H830"/>
+  <text class="label" x="62.0" y="94.6" text-anchor="end">3 km</text>
+  <path class="snowfill" d="M70.0,64.0 L70.0,214.1 L85.8,216.2 L101.7,217.2 L117.5,217.1 L133.3,215.9 L149.2,213.5 L165.0,210.2 L180.8,205.8 L196.7,200.5 L212.5,194.4 L228.3,187.5 L244.2,180.0 L260.0,172.1 L275.8,163.8 L291.7,155.3 L307.5,146.8 L323.3,138.3 L339.2,130.1 L355.0,122.2 L370.8,114.8 L386.7,108.1 L402.5,102.2 L418.3,97.0 L434.2,92.9 L450.0,89.7 L465.8,87.6 L481.7,86.6 L497.5,86.7 L513.3,87.9 L529.2,90.2 L545.0,93.6 L560.8,98.0 L576.7,103.3 L592.5,109.4 L608.3,116.3 L624.2,123.7 L640.0,131.7 L655.8,140.0 L671.7,148.5 L687.5,157.0 L703.3,165.5 L719.2,173.7 L735.0,181.6 L750.8,188.9 L766.7,195.7 L782.5,201.6 L798.3,206.7 L814.2,210.9 L830.0,214.1 L830.0,64.0 Z"/>
+  <path class="line1" d="M70.0,214.1 L85.8,216.2 L101.7,217.2 L117.5,217.1 L133.3,215.9 L149.2,213.5 L165.0,210.2 L180.8,205.8 L196.7,200.5 L212.5,194.4 L228.3,187.5 L244.2,180.0 L260.0,172.1 L275.8,163.8 L291.7,155.3 L307.5,146.8 L323.3,138.3 L339.2,130.1 L355.0,122.2 L370.8,114.8 L386.7,108.1 L402.5,102.2 L418.3,97.0 L434.2,92.9 L450.0,89.7 L465.8,87.6 L481.7,86.6 L497.5,86.7 L513.3,87.9 L529.2,90.2 L545.0,93.6 L560.8,98.0 L576.7,103.3 L592.5,109.4 L608.3,116.3 L624.2,123.7 L640.0,131.7 L655.8,140.0 L671.7,148.5 L687.5,157.0 L703.3,165.5 L719.2,173.7 L735.0,181.6 L750.8,188.9 L766.7,195.7 L782.5,201.6 L798.3,206.7 L814.2,210.9 L830.0,214.1 "/>
+  <path class="dashed" d="M70,114.4 H830"/>
+  <text class="label" x="826.0" y="108.4" text-anchor="end">highest peak, 2550 m</text>
+  <text class="small" x="95.3" y="79.9" text-anchor="start">snowy above the line</text>
+  <circle class="ink" cx="101.7" cy="217.2" r="3"/>
+  <text class="label" x="107.7" y="233.2" text-anchor="start">winter: snow down to 620 m</text>
+  <circle class="ink" cx="481.7" cy="86.6" r="3"/>
+  <text class="label" x="481.7" y="76.6" text-anchor="middle">summer: snow line at 3080 m, over the peak</text>
+  <text class="text" x="62.0" y="272.0" text-anchor="start">foliage tint (colour, and how much of it the leaves take)</text>
+  <rect x="70.0" y="284.3" width="16.2" height="35.7" fill="rgb(128,129,94)"/>
+  <rect x="85.8" y="286.0" width="16.2" height="34.0" fill="rgb(131,136,94)"/>
+  <rect x="101.7" y="287.8" width="16.2" height="32.2" fill="rgb(134,143,94)"/>
+  <rect x="117.5" y="289.6" width="16.2" height="30.4" fill="rgb(136,149,93)"/>
+  <rect x="133.3" y="291.3" width="16.2" height="28.7" fill="rgb(138,155,93)"/>
+  <rect x="149.2" y="293.1" width="16.2" height="26.9" fill="rgb(141,161,92)"/>
+  <rect x="165.0" y="294.9" width="16.2" height="25.1" fill="rgb(143,166,92)"/>
+  <rect x="180.8" y="296.6" width="16.2" height="23.4" fill="rgb(145,172,92)"/>
+  <rect x="196.7" y="298.4" width="16.2" height="21.6" fill="rgb(148,177,91)"/>
+  <rect x="212.5" y="300.2" width="16.2" height="19.8" fill="rgb(150,181,91)"/>
+  <rect x="228.3" y="302.0" width="16.2" height="18.0" fill="rgb(152,186,91)"/>
+  <rect x="244.2" y="303.7" width="16.2" height="16.3" fill="rgb(154,191,90)"/>
+  <rect x="260.0" y="305.5" width="16.2" height="14.5" fill="rgb(156,195,90)"/>
+  <rect x="275.8" y="306.2" width="16.2" height="13.8" fill="rgb(152,190,88)"/>
+  <rect x="291.7" y="306.9" width="16.2" height="13.1" fill="rgb(148,185,86)"/>
+  <rect x="307.5" y="307.6" width="16.2" height="12.4" fill="rgb(143,180,84)"/>
+  <rect x="323.3" y="308.3" width="16.2" height="11.7" fill="rgb(139,175,81)"/>
+  <rect x="339.2" y="309.0" width="16.2" height="11.0" fill="rgb(134,170,79)"/>
+  <rect x="355.0" y="309.7" width="16.2" height="10.3" fill="rgb(129,164,77)"/>
+  <rect x="370.8" y="310.5" width="16.2" height="9.5" fill="rgb(124,158,74)"/>
+  <rect x="386.7" y="311.2" width="16.2" height="8.8" fill="rgb(119,151,72)"/>
+  <rect x="402.5" y="311.9" width="16.2" height="8.1" fill="rgb(113,145,69)"/>
+  <rect x="418.3" y="312.6" width="16.2" height="7.4" fill="rgb(107,138,66)"/>
+  <rect x="434.2" y="313.3" width="16.2" height="6.7" fill="rgb(100,130,63)"/>
+  <rect x="450.0" y="314.0" width="16.2" height="6.0" fill="rgb(93,122,60)"/>
+  <rect x="465.8" y="311.6" width="16.2" height="8.4" fill="rgb(105,122,59)"/>
+  <rect x="481.7" y="309.3" width="16.2" height="10.7" fill="rgb(116,121,58)"/>
+  <rect x="497.5" y="306.9" width="16.2" height="13.1" fill="rgb(126,121,58)"/>
+  <rect x="513.3" y="304.6" width="16.2" height="15.4" fill="rgb(134,121,57)"/>
+  <rect x="529.2" y="302.2" width="16.2" height="17.8" fill="rgb(142,120,56)"/>
+  <rect x="545.0" y="299.8" width="16.2" height="20.2" fill="rgb(150,120,55)"/>
+  <rect x="560.8" y="297.5" width="16.2" height="22.5" fill="rgb(157,120,54)"/>
+  <rect x="576.7" y="295.1" width="16.2" height="24.9" fill="rgb(164,119,53)"/>
+  <rect x="592.5" y="292.8" width="16.2" height="27.2" fill="rgb(170,119,52)"/>
+  <rect x="608.3" y="290.4" width="16.2" height="29.6" fill="rgb(176,119,51)"/>
+  <rect x="624.2" y="288.0" width="16.2" height="32.0" fill="rgb(182,118,50)"/>
+  <rect x="640.0" y="285.7" width="16.2" height="34.3" fill="rgb(187,118,49)"/>
+  <rect x="655.8" y="283.3" width="16.2" height="36.7" fill="rgb(193,117,48)"/>
+  <rect x="671.7" y="280.9" width="16.2" height="39.1" fill="rgb(198,117,47)"/>
+  <rect x="687.5" y="280.0" width="16.2" height="40.0" fill="rgb(195,116,53)"/>
+  <rect x="703.3" y="280.0" width="16.2" height="40.0" fill="rgb(186,115,62)"/>
+  <rect x="719.2" y="280.0" width="16.2" height="40.0" fill="rgb(177,115,69)"/>
+  <rect x="735.0" y="280.0" width="16.2" height="40.0" fill="rgb(167,114,76)"/>
+  <rect x="750.8" y="280.0" width="16.2" height="40.0" fill="rgb(156,113,82)"/>
+  <rect x="766.7" y="280.0" width="16.2" height="40.0" fill="rgb(144,112,87)"/>
+  <rect x="782.5" y="280.0" width="16.2" height="40.0" fill="rgb(131,111,92)"/>
+  <rect x="798.3" y="280.7" width="16.2" height="39.3" fill="rgb(123,114,95)"/>
+  <rect x="814.2" y="282.5" width="16.2" height="37.5" fill="rgb(126,122,95)"/>
+  <text class="label" x="70.0" y="338.0" text-anchor="middle">month 0</text>
+  <text class="label" x="260.0" y="338.0" text-anchor="middle">month 3</text>
+  <text class="label" x="450.0" y="338.0" text-anchor="middle">month 6</text>
+  <text class="label" x="640.0" y="338.0" text-anchor="middle">month 9</text>
+  <text class="label" x="830.0" y="338.0" text-anchor="middle">month 12</text>
+  <text class="small" x="450.0" y="366.0" text-anchor="middle">year_length: 12 on a clock of months, warmest: 0.55, amplitude: 8 °C</text>
+</svg>
