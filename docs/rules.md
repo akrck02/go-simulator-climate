@@ -1,6 +1,6 @@
 # 📋 Rules of the climate plugin
 
-Version 1.0.0, protocol 1. Yearly temperature and rain over a relief, the biome of every place, and the turning seasons.
+Version 1.0.0, protocol 2. Yearly temperature and rain over a relief, the biome of every place, and the turning seasons.
 
 This reference is generated from what the plugin itself tells the host (the `describe` message), so it always
 matches the code. Parameters go under `with:` in a rules file; see go-simulator's
