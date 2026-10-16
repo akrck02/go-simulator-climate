@@ -136,5 +136,6 @@ go test ./...
 The tests build a round island with a ridge running north to south and check that the ridge is as
 cold as its height says, that the slope facing the west wind is wetter than the other, that snow,
 sea and a region's biome land where they should, and that the seasons move the snow line and the
-foliage around the year. Another reads the biome layer back with go-scene-builder's own loader,
-with an origin away from zero.
+foliage around the year. Others read the biome layer back with go-scene-builder's own loader, with
+an origin away from zero, work the climate out on the world's ground and drainage and again when
+that ground rises, and check that every rule describes its contracts.

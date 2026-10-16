@@ -42,6 +42,10 @@ func seasonsRule() plugin.Definition {
 				{Name: "foliage", Type: "list", Summary: "[{at: share of the year, color, amount}], interpolated around the year"},
 			},
 			Reads: world.Interest{Environment: true}, Writes: []string{"environment"},
+			Publishes: []protocol.OutputDescription{
+				plugin.Environment("snow", "the snow line and how it fades in"),
+				plugin.Environment("foliage_tint", "the colour foliage takes in the season"),
+			},
 		},
 		New: newSeasons,
 	}

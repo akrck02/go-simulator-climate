@@ -11,9 +11,10 @@ New here? Start with the [project README](../README.md).
 
 ## 🚧 Not done yet
 
-- The climate does not change with time: the `climate` rule works it out once, and the `seasons`
-  rule moves only the snow line and the foliage tint, not the `temperature` and `precipitation`
-  fields. There is no weather yet (no single storms, no daily rain).
+- The climate does not change with time on its own: the `climate` rule works it out once (and
+  again only when the world's ground changes, as the terrain's `erosion` rule makes it), and the
+  `seasons` rule moves only the snow line and the foliage tint, not the `temperature` and
+  `precipitation` fields. There is no weather yet (no single storms, no daily rain).
 - The foliage tint is drawn only on materials marked as foliage; the made-up island in these pages
   has no vegetation, so its pictures show the snow but not the tint.
 - The only example rules file, `examples/mountain.yaml`, works out the climate of a synthetic
