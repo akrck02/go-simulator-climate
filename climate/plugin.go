@@ -12,6 +12,10 @@ import (
 	"github.com/akrck02/go-simulator/world"
 )
 
+// drainageAreaField is the ground draining through every cell, in km², as the terrain plugin's
+// erosion rule publishes it.
+const drainageAreaField = "drainage_area"
+
 // Version of the plugin.
 const Version = "1.0.0"
 
@@ -42,7 +46,7 @@ func climateRule() plugin.Definition {
 				{Name: "regions", Type: "list", Summary: "[{biome, ellipse: {centre, radii} | polygon, when}]: the world's own biomes"},
 				{Name: "layer", Type: "text", Summary: "biomes.json: also save the biomes as a layer for go-scene-builder (-layer biome=…), with their names, in km east and north"},
 			},
-			Reads:  world.Interest{Fields: []string{world.FieldElevation, world.FieldDrainageArea}},
+			Reads:  world.Interest{Fields: []string{world.FieldElevation, drainageAreaField}},
 			Writes: []string{"temperature", "precipitation", "biome"},
 		},
 		New: newClimate,
@@ -120,7 +124,7 @@ func (rule *climateRuleInstance) compute(current *world.World) (*Result, error) 
 	rule.ground = slices.Clone(elevation.Values)
 	origin := pair(rule.parameters["origin"], [2]float64{0, 0})
 	var drained *Grid
-	if area := current.Field(world.FieldDrainageArea); area != nil {
+	if area := current.Field(drainageAreaField); area != nil {
 		drained = gridOfField(area, origin)
 	}
 	return ComputeOn(gridOfField(elevation, origin), drained, rule.parameters)
