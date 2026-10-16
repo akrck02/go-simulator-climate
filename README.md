@@ -9,7 +9,7 @@ biome. A `seasons` rule turns the year: snow line and foliage colour.
 
 [![Go](https://img.shields.io/github/go-mod/go-version/akrck02/go-simulator-climate)](go.mod)
 ![Plugin](https://img.shields.io/badge/go--simulator-plugin-informational)
-![Protocol](https://img.shields.io/badge/protocol-1-informational)
+![Protocol](https://img.shields.io/badge/protocol-2-informational)
 ![Version](https://img.shields.io/badge/version-1.0.0-3DDC84)
 
 </div>

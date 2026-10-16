@@ -12,7 +12,7 @@ with each other and with the land: no snow at the beach, no rainforest in a rain
   <img alt="From the relief to the biome of every place: the relief gives every cell its facts (temperature, which falls with height; precipitation, from the wind, the climb and the rain shadow; height and slope; river, from the drained area and a flat floor; coast, near the sea, low and flat); the biome table picks the first rule whose conditions hold, regions with a biome of their own win, and out come the temperature, precipitation and biome fields and the biomes event" src="images/model.svg" width="880">
 </p>
 
-It runs once, at the start, and publishes three fields and an event:
+It works the climate out at the start and publishes three fields and an event:
 
 | Output | Content |
 |---|---|
@@ -23,6 +23,12 @@ It runs once, at the start, and publishes three fields and an event:
 
 The grid has the cell given by `cell` (km), over the relief's extent; `origin` places the relief's
 kilometres east and north on the world (`x = east − origin[0]`, `z = origin[1] − north`).
+
+The relief is the `relief` file or, without one, the world's `elevation`, as the
+[terrain plugin](https://github.com/akrck02/go-simulator-terrain) publishes it (put it first). On
+the world's ground the climate also takes the world's `drainage_area` when there is one (see
+below), and when that ground changes, because the terrain's `erosion` rule moved it, the climate is
+worked out again in the step after and published again.
 
 The maps and charts below are of a made-up island, 20 km by 15 km, with a ridge of about 2,550
 metres in the east, run with the rules file in [getting started](getting-started.md#a-rules-file).
@@ -85,7 +91,11 @@ rain shadow swap places.
 ## River valleys and coasts
 
 The area that drains through every land cell is followed downhill, from the highest cell to the
-lowest: each cell sends its water to the lowest of its eight neighbours. A cell is on a **river valley** when it drains more than `river_area` km²
+lowest: each cell sends its water to the lowest of its eight neighbours. When the world has a
+`drainage_area` (the terrain's `erosion` rule publishes it, with hollows filled so all water
+reaches the sea), that one is used instead, so the climate's rivers are the terrain's: every cell
+of the climate's grid takes the largest area of the cells inside it, so a river one fine cell wide
+is not lost on a coarser grid. A cell is on a **river valley** when it drains more than `river_area` km²
 and is flatter than `river_slope`; the valley floor is widened by two cells. A cell is on the
 **coast** when it is within `coast_reach` km of the sea, lower than `coast_low` metres and flatter
 than `coast_slope`.

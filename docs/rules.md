@@ -1,6 +1,6 @@
 # 📋 Rules of the climate plugin
 
-Version 1.0.0, protocol 1. Yearly temperature and rain over a relief, the biome of every place, and the turning seasons.
+Version 1.0.0, protocol 2. Yearly temperature and rain over a relief, the biome of every place, and the turning seasons.
 
 This reference is generated from what the plugin itself tells the host (the `describe` message), so it always
 matches the code. Parameters go under `with:` in a rules file; see go-simulator's
@@ -8,19 +8,19 @@ matches the code. Parameters go under `with:` in a rules file; see go-simulator'
 
 | Rule | What it does |
 |---|---|
-| [`climate`](#climate) | Works out temperature (fields: temperature, °C), rain (precipitation, mm a year) and biome (biome: index into the names of the "biomes" event, −1 for the sea) once, at the start. |
+| [`climate`](#climate) | Works out temperature (fields: temperature, °C), rain (precipitation, mm a year) and biome (biome: index into the names of the "biomes" event, −1 for the sea) at the start, and again when the world's ground changes. |
 | [`seasons`](#seasons) | Turns the year: moves the snow line with the season's temperature and gives foliage the season's colour (environment). |
 
 ## `climate`
 
-Works out temperature (fields: temperature, °C), rain (precipitation, mm a year) and biome (biome: index into the names of the "biomes" event, −1 for the sea) once, at the start.
+Works out temperature (fields: temperature, °C), rain (precipitation, mm a year) and biome (biome: index into the names of the "biomes" event, −1 for the sea) at the start, and again when the world's ground changes.
 
-- **Reads:** nothing from other plugins
+- **Reads:** fields `elevation`, `drainage_area`
 - **Writes:** `temperature`, `precipitation`, `biome`
 
 | Parameter | Type | Default | Meaning |
 |---|---|---|---|
-| `relief` | text |  | relief header (relieve.json with relieve.f32 next to it), km east and north |
+| `relief` | text |  | relief header (relieve.json with relieve.f32 next to it), km east and north; without it, the world's elevation |
 | `origin` | list |  | [east, north] of the world's origin: x = east − origin[0], z = origin[1] − north |
 | `cell` | number | `0.1` | km: cell of the fields |
 | `temperature` | map |  | {sea_level: °C, lapse: °C per km, northward: °C per 10 km} |
