@@ -1,2 +1,4 @@
 *.test
 *.out
+examples/biomes.json
+examples/biomes.f32

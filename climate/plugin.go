@@ -39,6 +39,7 @@ func climateRule() plugin.Definition {
 				{Name: "terrain", Type: "map", Summary: "{river_area: km², river_slope, coast_reach: km, coast_low: m, coast_slope}"},
 				{Name: "biomes", Type: "list", Summary: "rules: [{biome, when: {temperature, precipitation, height, slope: {min, max}, river, coast}}]"},
 				{Name: "regions", Type: "list", Summary: "[{biome, ellipse: {centre, radii} | polygon, when}]: the world's own biomes"},
+				{Name: "layer", Type: "text", Summary: "biomes.json: also save the biomes as a layer for go-scene-builder (-layer biome=…), with their names, in km east and north"},
 			},
 			Writes: []string{"temperature", "precipitation", "biome"},
 		},
@@ -86,6 +87,9 @@ func (rule *climateRuleInstance) publish(context *plugin.Context) error {
 		context.SetField(fieldOf(field.name, field.grid, origin))
 	}
 	context.Emit("biomes", map[string]any{"names": result.Names})
+	if layer := rule.parameters.Text("layer", ""); layer != "" {
+		return writeLayer(plugin.Path(layer), result.Biome, result.Names)
+	}
 	return nil
 }
 
