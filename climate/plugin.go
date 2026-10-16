@@ -198,8 +198,10 @@ func temperatureSettings(values plugin.Parameters) TemperatureSettings {
 }
 
 func rainSettings(values plugin.Parameters) RainSettings {
-	return RainSettings{WindFrom: values.Number("wind_from", 270), Background: values.Number("background", 900),
-		Orographic: values.Number("orographic", 2200), Recharge: values.Number("recharge", 0.08), Evaporation: values.Number("evaporation", 0.008),
+	// neutral defaults, for each world to set its own: the westerlies of the middle latitudes, about the
+	// world's mean yearly rain (Adler et al. 2003) and as much again on the most exposed slopes (Roe 2005)
+	return RainSettings{WindFrom: values.Number("wind_from", 270), Background: values.Number("background", 1000),
+		Orographic: values.Number("orographic", 1000), Recharge: values.Number("recharge", 0.08), Evaporation: values.Number("evaporation", 0.008),
 		Base: values.Number("base", 0.004), Rise: values.Number("rise", 0.35), CalculationCell: values.Number("calculation_cell", 0.5),
 		ReliefScale: values.Number("relief_scale", 2.5), Smoothing: values.Number("smoothing", 2)}
 }
