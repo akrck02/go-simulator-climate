@@ -4,6 +4,7 @@ package climate
 
 import (
 	"fmt"
+	"slices"
 
 	"github.com/akrck02/go-scene-builder/relief"
 	"github.com/akrck02/go-simulator/plugin"
@@ -29,9 +30,9 @@ func climateRule() plugin.Definition {
 		Description: protocol.RuleDescription{
 			Name: "climate",
 			Summary: "Works out temperature (fields: temperature, °C), rain (precipitation, mm a year) and biome (biome: index into the " +
-				"names of the \"biomes\" event, −1 for the sea) once, at the start.",
+				"names of the \"biomes\" event, −1 for the sea) at the start, and again when the world's ground changes.",
 			Parameters: []protocol.ParameterDescription{
-				{Name: "relief", Type: "text", Summary: "relief header (relieve.json with relieve.f32 next to it), km east and north"},
+				{Name: "relief", Type: "text", Summary: "relief header (relieve.json with relieve.f32 next to it), km east and north; without it, the world's elevation"},
 				{Name: "origin", Type: "list", Summary: "[east, north] of the world's origin: x = east − origin[0], z = origin[1] − north"},
 				{Name: "cell", Type: "number", Default: 0.1, Summary: "km: cell of the fields"},
 				{Name: "temperature", Type: "map", Summary: "{sea_level: °C, lapse: °C per km, northward: °C per 10 km}"},
@@ -41,6 +42,7 @@ func climateRule() plugin.Definition {
 				{Name: "regions", Type: "list", Summary: "[{biome, ellipse: {centre, radii} | polygon, when}]: the world's own biomes"},
 				{Name: "layer", Type: "text", Summary: "biomes.json: also save the biomes as a layer for go-scene-builder (-layer biome=…), with their names, in km east and north"},
 			},
+			Reads:  world.Interest{Fields: []string{world.FieldElevation, world.FieldDrainageArea}},
 			Writes: []string{"temperature", "precipitation", "biome"},
 		},
 		New: newClimate,
@@ -50,12 +52,10 @@ func climateRule() plugin.Definition {
 type climateRuleInstance struct {
 	parameters plugin.Parameters
 	done       bool
+	ground     []float32 // the world's elevation the climate was worked out on (nil with a relief file)
 }
 
 func newClimate(parameters plugin.Parameters) (plugin.Rule, error) {
-	if parameters.Text("relief", "") == "" {
-		return nil, fmt.Errorf("climate needs a relief")
-	}
 	return &climateRuleInstance{parameters: parameters}, nil
 }
 
@@ -65,17 +65,25 @@ func (rule *climateRuleInstance) Start(context *plugin.Context) error {
 	return rule.publish(context)
 }
 
-// Step publishes the climate if Start did not (the climate does not change with time yet).
+// Step publishes the climate if Start did not. The climate does not change with time on its own;
+// when it was worked out on the world's ground and that ground changed (the terrain's erosion
+// rule moves it), it is worked out again.
 func (rule *climateRuleInstance) Step(context *plugin.Context) error {
-	if rule.done {
+	if !rule.done {
+		rule.done = true
+		return rule.publish(context)
+	}
+	if rule.ground == nil {
 		return nil
 	}
-	rule.done = true
-	return rule.publish(context)
+	if elevation := context.World.Field(world.FieldElevation); elevation != nil && !slices.Equal(elevation.Values, rule.ground) {
+		return rule.publish(context)
+	}
+	return nil
 }
 
 func (rule *climateRuleInstance) publish(context *plugin.Context) error {
-	result, err := Compute(rule.parameters)
+	result, err := rule.compute(context.World)
 	if err != nil {
 		return err
 	}
@@ -99,13 +107,43 @@ type Result struct {
 	Names                             []string
 }
 
-// Compute works out the climate from a rule's parameters (the plugin's work, without the host).
+// compute works the climate out on the relief file, or on the world's elevation (and its drainage,
+// when the world has it) without one.
+func (rule *climateRuleInstance) compute(current *world.World) (*Result, error) {
+	if rule.parameters.Text("relief", "") != "" {
+		return Compute(rule.parameters)
+	}
+	elevation := current.Field(world.FieldElevation)
+	if elevation == nil {
+		return nil, fmt.Errorf("climate needs a relief: give one, or put the terrain plugin first so the world has an elevation")
+	}
+	rule.ground = slices.Clone(elevation.Values)
+	origin := pair(rule.parameters["origin"], [2]float64{0, 0})
+	var drained *Grid
+	if area := current.Field(world.FieldDrainageArea); area != nil {
+		drained = gridOfField(area, origin)
+	}
+	return ComputeOn(gridOfField(elevation, origin), drained, rule.parameters)
+}
+
+// Compute works out the climate from a rule's parameters and its relief file (the plugin's work,
+// without the host).
 func Compute(parameters plugin.Parameters) (*Result, error) {
 	grid, err := relief.Load(plugin.Path(parameters.Text("relief", "")))
 	if err != nil {
 		return nil, err
 	}
-	heights := gridOf(grid).resampled(parameters.Number("cell", 0.1))
+	return ComputeOn(gridOf(grid), nil, parameters)
+}
+
+// ComputeOn works out the climate on a relief in km east and north. drained, when given, is the
+// area (km²) draining through every cell, on any grid: it is taken at its largest in every cell of
+// the climate's grid, so a river a cell wide is not lost on a coarser grid.
+func ComputeOn(ground, drained *Grid, parameters plugin.Parameters) (*Result, error) {
+	heights := ground.resampled(parameters.Number("cell", 0.1))
+	if drained != nil {
+		drained = drained.largestIn(heights)
+	}
 	land := make([]bool, len(heights.Values))
 	for index, height := range heights.Values {
 		land[index] = height > 0
@@ -116,7 +154,7 @@ func Compute(parameters plugin.Parameters) (*Result, error) {
 	if err != nil {
 		return nil, err
 	}
-	biomes, names, err := classify(heights, temperatures, rains, land, rules, regions, terrainSettings(parameters.Map("terrain")))
+	biomes, names, err := classify(heights, temperatures, rains, drained, land, rules, regions, terrainSettings(parameters.Map("terrain")))
 	if err != nil {
 		return nil, err
 	}
@@ -127,6 +165,17 @@ func gridOf(source *relief.Relief) *Grid {
 	grid := newGrid(source.Columns, source.Rows, source.Cell, source.West, source.North)
 	for index, height := range source.Heights {
 		grid.Values[index] = float64(height)
+	}
+	return grid
+}
+
+// gridOfField is a world field in km east and north: east = x + origin east, north = origin north − z;
+// its rows go from the smallest z, which is the north, like a grid's.
+func gridOfField(field *world.Field, origin [2]float64) *Grid {
+	cell := (field.Extent.MaximumX - field.Extent.MinimumX) / float64(field.Columns)
+	grid := newGrid(field.Columns, field.Rows, cell, field.Extent.MinimumX+origin[0], origin[1]-field.Extent.MinimumZ)
+	for index, value := range field.Values {
+		grid.Values[index] = float64(value)
 	}
 	return grid
 }

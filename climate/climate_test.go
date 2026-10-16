@@ -6,6 +6,7 @@ import (
 	"math"
 	"os"
 	"path/filepath"
+	"slices"
 	"testing"
 
 	"github.com/akrck02/go-scene-builder/relief"
@@ -111,5 +112,123 @@ func TestTheBiomeLayerLinesUpWithTheReliefWhateverTheOrigin(t *testing.T) {
 func TestTheLayerNeedsAJsonHeader(t *testing.T) {
 	if err := writeLayer(filepath.Join(t.TempDir(), "biomes.f32"), newGrid(2, 2, 1, 0, 2), nil); err == nil {
 		t.Fatal("a layer path that is not a .json header must be refused")
+	}
+}
+
+// worldWithTheGround is a world whose elevation is a relief file laid on it with an origin.
+func worldWithTheGround(t *testing.T, path string, origin [2]float64) *world.World {
+	t.Helper()
+	grid, err := relief.Load(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	extent := &world.Extent{MinimumX: grid.West - origin[0], MaximumX: grid.East() - origin[0],
+		MinimumZ: origin[1] - grid.North, MaximumZ: origin[1] - grid.South()}
+	current := world.New()
+	patch := &world.FieldPatch{Name: world.FieldElevation, Columns: grid.Columns, Rows: grid.Rows, Extent: extent, Values: grid.Heights}
+	if err := current.ApplyChange(world.SetFieldValues(patch)); err != nil {
+		t.Fatal(err)
+	}
+	return current
+}
+
+func TestTheClimateCanBeWorkedOutOnTheWorldsGround(t *testing.T) {
+	path := island(t)
+	fromFile, err := Compute(parameters(path))
+	if err != nil {
+		t.Fatal(err)
+	}
+	settings := parameters(path)
+	delete(settings, "relief")
+	settings["origin"] = []any{6.0, 4.0}
+	rule, _ := newClimate(settings)
+	climate := rule.(*climateRuleInstance)
+	fromWorld, err := climate.compute(worldWithTheGround(t, path, [2]float64{6, 4}))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for index := range fromFile.Biome.Values {
+		if fromFile.Biome.Values[index] != fromWorld.Biome.Values[index] || fromFile.Temperature.Values[index] != fromWorld.Temperature.Values[index] {
+			t.Fatalf("cell %d: the same ground from the world and from the file gives another climate", index)
+		}
+	}
+	if _, err := climate.compute(world.New()); err == nil {
+		t.Fatal("without a relief and without an elevation in the world, the climate must refuse to start")
+	}
+}
+
+func TestTheClimateFollowsTheGroundWhenItChanges(t *testing.T) {
+	path := island(t)
+	settings := parameters(path)
+	delete(settings, "relief")
+	rule, _ := newClimate(settings)
+	current := worldWithTheGround(t, path, [2]float64{})
+	context := &plugin.Context{World: current}
+	if err := rule.(*climateRuleInstance).Start(context); err != nil {
+		t.Fatal(err)
+	}
+	before := slices.Clone(current.Field(world.FieldTemperature).Values)
+	if err := rule.Step(context); err != nil {
+		t.Fatal(err)
+	}
+	if !slices.Equal(before, current.Field(world.FieldTemperature).Values) {
+		t.Fatal("the same ground must give the same climate")
+	}
+	raised := slices.Clone(current.Field(world.FieldElevation).Values)
+	for index := range raised {
+		if raised[index] > 0 {
+			raised[index] += 500 // the land rose
+		}
+	}
+	elevation := current.Field(world.FieldElevation)
+	patch := &world.FieldPatch{Name: world.FieldElevation, Columns: elevation.Columns, Rows: elevation.Rows, Extent: &elevation.Extent, Values: raised}
+	if err := current.ApplyChange(world.SetFieldValues(patch)); err != nil {
+		t.Fatal(err)
+	}
+	if err := rule.Step(context); err != nil {
+		t.Fatal(err)
+	}
+	if slices.Equal(before, current.Field(world.FieldTemperature).Values) {
+		t.Fatal("land 500 m higher must be colder: the climate should be worked out again")
+	}
+}
+
+func TestTheWorldsDrainageKeepsNarrowRivers(t *testing.T) {
+	fine := newGrid(4, 4, 0.05, 0, 0.2)
+	fine.Values[1*4+2] = 90 // a river one fine cell wide
+	coarse := fine.largestIn(newGrid(2, 2, 0.1, 0, 0.2))
+	if coarse.Values[0*2+1] != 90 || coarse.Values[0] != 0 {
+		t.Fatalf("the coarse cell holding the river keeps its 90 km², the others nothing: %v", coarse.Values)
+	}
+}
+
+func TestTheWorldsDrainageMakesTheRivers(t *testing.T) {
+	settings := parameters(island(t))
+	settings["biomes"] = []any{map[string]any{"biome": "riverside", "when": map[string]any{"river": true}}, map[string]any{"biome": "dry"}}
+	settings["regions"] = []any{}
+	grid, err := relief.Load(plugin.Path(settings.Text("relief", "")))
+	if err != nil {
+		t.Fatal(err)
+	}
+	ground := gridOf(grid)
+	riversides := func(drained *Grid) int {
+		result, err := ComputeOn(ground, drained, settings)
+		if err != nil {
+			t.Fatal(err)
+		}
+		count := 0
+		for _, value := range result.Biome.Values {
+			if value == 0 {
+				count++
+			}
+		}
+		return count
+	}
+	nowhere, everywhere := ground.like(), ground.like()
+	for index := range everywhere.Values {
+		everywhere.Values[index] = 1000 // km²: as if a great river drained through every cell
+	}
+	if dry, wet := riversides(nowhere), riversides(everywhere); dry != 0 || wet == 0 {
+		t.Fatalf("the rivers must come from the world's drainage: %d riverside cells with none, %d with a great river everywhere", dry, wet)
 	}
 }

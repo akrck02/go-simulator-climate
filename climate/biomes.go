@@ -58,8 +58,9 @@ type TerrainSettings struct {
 	CoastSlope float64
 }
 
-// classify gives every land cell the index of its biome in names (−1 for the sea).
-func classify(heights, temperatures, rains *Grid, land []bool, rules []BiomeRule, regions []Region, terrain TerrainSettings) (*Grid, []string, error) {
+// classify gives every land cell the index of its biome in names (−1 for the sea). drained is the
+// area (km²) draining through every cell when the world has it; nil works it out here.
+func classify(heights, temperatures, rains, drained *Grid, land []bool, rules []BiomeRule, regions []Region, terrain TerrainSettings) (*Grid, []string, error) {
 	names, index := []string{}, map[string]int{}
 	register := func(name string) int {
 		if position, known := index[name]; known {
@@ -82,7 +83,9 @@ func classify(heights, temperatures, rains *Grid, land []bool, rules []BiomeRule
 		}
 	}
 	slopes := ground.blurred(heights.Cell).slope()
-	drained := drainage(ground, land)
+	if drained == nil {
+		drained = drainage(ground, land)
+	}
 	seaDistance := distanceToSea(heights, land)
 	riverValleys := valleys(drained, slopes, land, terrain)
 	result := heights.like()

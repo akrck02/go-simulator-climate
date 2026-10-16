@@ -68,6 +68,35 @@ func (grid *Grid) resampled(cell float64) *Grid {
 	return result
 }
 
+// largestIn is the largest value of the grid inside every cell of another grid; cells of the
+// other grid that no cell centre of this one falls in take the value at their centre.
+func (grid *Grid) largestIn(other *Grid) *Grid {
+	result := other.like()
+	for index := range result.Values {
+		result.Values[index] = math.Inf(-1)
+	}
+	for row := range grid.Rows {
+		for column := range grid.Columns {
+			east, north := grid.centre(row, column)
+			otherColumn, otherRow := int(math.Floor((east-other.West)/other.Cell)), int(math.Floor((other.North-north)/other.Cell))
+			if otherColumn < 0 || otherRow < 0 || otherColumn >= other.Columns || otherRow >= other.Rows {
+				continue
+			}
+			position := otherRow*other.Columns + otherColumn
+			result.Values[position] = math.Max(result.Values[position], grid.at(row, column))
+		}
+	}
+	for row := range other.Rows {
+		for column := range other.Columns {
+			if position := row*other.Columns + column; math.IsInf(result.Values[position], -1) {
+				east, north := other.centre(row, column)
+				result.Values[position] = grid.nearest(east, north)
+			}
+		}
+	}
+	return result
+}
+
 // blurred is the grid smoothed with a Gaussian of sigma kilometres (separable, clamped edges).
 func (grid *Grid) blurred(sigma float64) *Grid {
 	radius := sigma / grid.Cell
