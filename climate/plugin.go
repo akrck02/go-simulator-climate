@@ -48,6 +48,14 @@ func climateRule() plugin.Definition {
 			},
 			Reads:  world.Interest{Fields: []string{world.FieldElevation, drainageAreaField}},
 			Writes: []string{"temperature", "precipitation", "biome"},
+			Publishes: []protocol.OutputDescription{
+				plugin.Field(world.FieldTemperature, "°C", "mean yearly temperature"),
+				plugin.Field(world.FieldPrecipitation, "mm", "yearly rain and snow"),
+				plugin.IndexField(world.FieldBiome, world.EventBiomes, "the biome of every place, −1 for the sea"),
+				plugin.Event(world.EventBiomes, "the names of the biomes", plugin.Property("names", "", "the biome of every index")),
+			},
+			// both optional: a relief file can stand for the elevation, and without drainage the rule works it out
+			Expects: []protocol.InputDescription{plugin.ReadsField(world.FieldElevation, "m"), plugin.ReadsField(drainageAreaField, "km²")},
 		},
 		New: newClimate,
 	}
