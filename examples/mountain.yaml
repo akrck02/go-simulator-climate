@@ -1,0 +1,28 @@
+# The climate of a synthetic mountain, 6 × 4 km and 1800 m high (relieve.json and relieve.f32 next to this
+# file), with a biome layer for go-scene-builder. Only to show the plugin: nothing here comes from any world.
+#
+#   cd ../../go-simulator && go run ./cmd/simulate -rules ../go-simulator-climate/examples/mountain.yaml -output results/
+#
+# go-scene-builder then reads examples/biomes.json as a layer: build-scene -layer biome=…/biomes.json
+plugins:
+  - {name: climate, command: [go, run, .], directory: ..}
+
+stages:
+  - name: mountain
+    clock: {unit: year, from: 0, to: 1, step: 1}
+    snapshots: [1]
+    snapshot_fields: [temperature, precipitation, biome]
+    rules:
+      - rule: climate
+        with:
+          relief: relieve.json
+          origin: [3, 2]
+          cell: 0.1
+          layer: biomes.json
+          temperature: {sea_level: 12, lapse: 6.5}
+          rain: {wind_from: 270, background: 900, orographic: 1500}
+          biomes:
+            - {biome: snow, when: {temperature: {max: 1}}}
+            - {biome: rock, when: {slope: {min: 0.7}}}
+            - {biome: forest, when: {precipitation: {min: 1400}}}
+            - {biome: meadow}

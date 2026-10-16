@@ -14,10 +14,7 @@ New here? Start with the [project README](../README.md).
 - The climate does not change with time: the `climate` rule works it out once, and the `seasons`
   rule moves only the snow line and the foliage tint, not the `temperature` and `precipitation`
   fields. There is no weather yet (no single storms, no daily rain).
-- A snapshot of the `biome` field is not yet a layer go-scene-builder reads as it is: its header
-  has no `labels` (the names are in the `biomes` event), and its `west` and `north` are the world's,
-  so they match the relief's only with `origin: [0, 0]` (see
-  [getting started](getting-started.md#in-the-viewer)).
 - The foliage tint is drawn only on materials marked as foliage; the made-up island in these pages
   has no vegetation, so its pictures show the snow but not the tint.
-- There is no example rules file in the repository yet; the pages show rules to copy.
+- The only example rules file, `examples/mountain.yaml`, works out the climate of a synthetic
+  mountain without the seasons; the pages show the rest as rules to copy.

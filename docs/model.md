@@ -186,8 +186,20 @@ everything above the snow line of the moment.
 cd ../go-simulator && go run ./cmd/simulate -rules climate.yaml -output results
 ```
 
-Run without a window, go-simulator saves the fields as grids that
-[go-scene-builder](https://github.com/akrck02/go-scene-builder) reads as a layer (`-layer biome=…`) to colour the
-terrain and sow each biome's vegetation; the [flora plugin](https://github.com/akrck02/go-simulator-flora) reads them
-from the world to grow vegetation. [Getting started](getting-started.md) has a whole rules file
+The [flora plugin](https://github.com/akrck02/go-simulator-flora) reads the fields from the world to
+grow vegetation.
+
+For [go-scene-builder](https://github.com/akrck02/go-scene-builder), which colours the terrain and sows
+each biome's vegetation from a layer (`-layer biome=biomes.json`), give the rule a `layer`:
+
+```yaml
+- rule: climate
+  with: {relief: relieve.json, origin: [3, 2], layer: biomes.json, …}
+```
+
+It saves `biomes.json` and `biomes.f32` once, at the start, next to the rules file (or where the path
+says). The grids go-simulator saves in its snapshots will not do for this: their coordinates are the
+world's x and z, which move with `origin`, and the names of the biomes are not in them (they travel in
+the `biomes` event). The layer is in the relief's own kilometres east and north, like the scene
+builder's map and relief, and carries the names as `labels`; the sea is −1, with no name. [Getting started](getting-started.md) has a whole rules file
 and the way to the viewer.

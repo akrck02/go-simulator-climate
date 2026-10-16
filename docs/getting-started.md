@@ -83,10 +83,12 @@ go-simulator runs the year as fast as it can and saves, in `results/`, the three
 {"data":{"names":["snow","rock","riverside","coast","forest","meadow","steppe","old wood"]},"name":"biomes","origin":"climate","stage":"","time":0}
 ```
 
-[go-scene-builder](https://github.com/akrck02/go-scene-builder) reads the `biome` grid as a layer
-(`-layer biome=…`) to colour the terrain and sow each biome's vegetation, and the
-[flora plugin](https://github.com/akrck02/go-simulator-flora) reads the fields from the world to
-grow vegetation.
+The [flora plugin](https://github.com/akrck02/go-simulator-flora) reads the fields from the world to
+grow vegetation. For [go-scene-builder](https://github.com/akrck02/go-scene-builder), which colours
+the terrain and sows each biome's vegetation from a layer (`-layer biome=…`), add `layer:
+biomes.json` to the climate rule: it saves `biomes.json` and `biomes.f32` next to the rules file,
+with the biome names as `labels` and in the relief's kilometres east and north, so the layer lines
+up with the relief whatever the `origin` (see [the model](model.md#use)).
 
 ## In the viewer
 
@@ -120,11 +122,9 @@ The style gives every biome a colour under `terrain.biomes` (see go-scene-builde
 `empty.geojson` is a map with no features. `-advance 26` steps the year 26 times before showing,
 to month 6.5.
 
-`biomes.json` is the snapshot's `year 0 biome.json` with two hand edits, for now:
-
-- **`labels`**, the names from the `biomes` event, in order. The snapshot has only the numbers.
-- **`west` and `north`** set to the relief's. A snapshot is in world coordinates (x = east −
-  `origin[0]`, z = `origin[1]` − north), so its edges match the relief's only with `origin: [0, 0]`.
+`biomes.json` is the layer the climate rule saves with `layer: biomes.json`. The snapshot's
+`year 0 biome.json` will not do as it is: it has no names, and its edges are the world's, which
+match the relief's only with `origin: [0, 0]`.
 
 ## The tests
 
@@ -136,4 +136,5 @@ go test ./...
 The tests build a round island with a ridge running north to south and check that the ridge is as
 cold as its height says, that the slope facing the west wind is wetter than the other, that snow,
 sea and a region's biome land where they should, and that the seasons move the snow line and the
-foliage around the year.
+foliage around the year. Another reads the biome layer back with go-scene-builder's own loader,
+with an origin away from zero.

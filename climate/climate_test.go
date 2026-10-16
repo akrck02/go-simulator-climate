@@ -8,7 +8,9 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/akrck02/go-scene-builder/relief"
 	"github.com/akrck02/go-simulator/plugin"
+	"github.com/akrck02/go-simulator/world"
 )
 
 // island writes a relief: a round island 20 km across with a ridge running north to south.
@@ -72,5 +74,42 @@ func TestClimateOfARidge(t *testing.T) {
 		if got := names[result.Biome.nearest(check.east, check.north)]; got != check.want {
 			t.Errorf("biome at %v, %v: %s, want %s", check.east, check.north, got, check.want)
 		}
+	}
+}
+
+func TestTheBiomeLayerLinesUpWithTheReliefWhateverTheOrigin(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "biomes.json")
+	settings := parameters(island(t))
+	settings["origin"], settings["layer"] = []any{6.0, 4.0}, path
+	rule, err := newClimate(settings)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := rule.(*climateRuleInstance).Start(&plugin.Context{World: world.New()}); err != nil {
+		t.Fatal(err)
+	}
+	layer, err := relief.Load(path)
+	if err != nil {
+		t.Fatalf("go-scene-builder should read the layer: %v", err)
+	}
+	// the same places as TestClimateOfARidge, in the relief's km east and north: the origin moves the
+	// world's fields, not the layer
+	for _, check := range []struct {
+		east, north float64
+		want        string
+	}{{0, 0, "snow"}, {14, 14, ""}, {0, -8.6, "orchard"}} {
+		category, inside := layer.Category(check.east, check.north)
+		if !inside {
+			t.Fatalf("%v, %v should be inside the layer", check.east, check.north)
+		}
+		if got := layer.Label(category); got != check.want {
+			t.Errorf("biome of the layer at %v, %v: %q, want %q", check.east, check.north, got, check.want)
+		}
+	}
+}
+
+func TestTheLayerNeedsAJsonHeader(t *testing.T) {
+	if err := writeLayer(filepath.Join(t.TempDir(), "biomes.f32"), newGrid(2, 2, 1, 0, 2), nil); err == nil {
+		t.Fatal("a layer path that is not a .json header must be refused")
 	}
 }

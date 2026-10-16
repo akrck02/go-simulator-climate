@@ -28,6 +28,7 @@ Works out temperature (fields: temperature, °C), rain (precipitation, mm a year
 | `terrain` | map |  | {river_area: km², river_slope, coast_reach: km, coast_low: m, coast_slope} |
 | `biomes` | list |  | rules: [{biome, when: {temperature, precipitation, height, slope: {min, max}, river, coast}}] |
 | `regions` | list |  | [{biome, ellipse: {centre, radii} \| polygon, when}]: the world's own biomes |
+| `layer` | text |  | biomes.json: also save the biomes as a layer for go-scene-builder (-layer biome=…), with their names, in km east and north |
 
 ## `seasons`
 
