@@ -1,17 +1,17 @@
-# Rules of the climate plugin
+# 📋 Rules of the climate plugin
 
 Version 1.0.0, protocol 1. Yearly temperature and rain over a relief, the biome of every place, and the turning seasons.
 
 This reference is generated from what the plugin itself tells the host (the `describe` message), so it always
 matches the code. Parameters go under `with:` in a rules file; see go-simulator's
-[rules file reference](https://github.com/akrck02/go-simulator/blob/feature/simuladores-genericos/docs/rules-files.md).
+[rules file reference](https://github.com/akrck02/go-simulator/blob/main/docs/rules-files.md).
 
 | Rule | What it does |
 |---|---|
 | [`climate`](#climate) | Works out temperature (fields: temperature, °C), rain (precipitation, mm a year) and biome (biome: index into the names of the "biomes" event, −1 for the sea) at the start, and again when the world's ground changes. |
 | [`seasons`](#seasons) | Turns the year: moves the snow line with the season's temperature and gives foliage the season's colour (environment). |
 
-## climate
+## `climate`
 
 Works out temperature (fields: temperature, °C), rain (precipitation, mm a year) and biome (biome: index into the names of the "biomes" event, −1 for the sea) at the start, and again when the world's ground changes.
 
@@ -30,7 +30,7 @@ Works out temperature (fields: temperature, °C), rain (precipitation, mm a year
 | `regions` | list |  | [{biome, ellipse: {centre, radii} \| polygon, when}]: the world's own biomes |
 | `layer` | text |  | biomes.json: also save the biomes as a layer for go-scene-builder (-layer biome=…), with their names, in km east and north |
 
-## seasons
+## `seasons`
 
 Turns the year: moves the snow line with the season's temperature and gives foliage the season's colour (environment).
 

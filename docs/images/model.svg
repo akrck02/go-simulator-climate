@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 316" width="880" height="316" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <style>
+    .bg { fill: #ffffff; }
+    .box { fill: #f6f8fa; stroke: #d0d7de; }
+    .accent { fill: #ddf4ff; stroke: #54aeff; }
+    .warm { fill: #fff1e5; stroke: #fb8f44; }
+    .title { fill: #1f2328; font-size: 15px; font-weight: 600; }
+    .text { fill: #59636e; font-size: 12.5px; }
+    .code { fill: #0969da; font-size: 12.5px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .label { fill: #59636e; font-size: 11.5px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .arrow { stroke: #8c959f; stroke-width: 1.6; fill: none; }
+    .dashed { stroke: #8c959f; stroke-width: 1.2; fill: none; stroke-dasharray: 4 4; }
+    .head { fill: #8c959f; }
+    .grid { stroke: #d0d7de; stroke-width: 1; fill: none; }
+    .on { fill: #0969da; } .on2 { fill: #bc4c00; }
+    .pause { fill: #eaeef2; }
+    @media (prefers-color-scheme: dark) {
+      .bg { fill: #0d1117; }
+      .box { fill: #161b22; stroke: #30363d; }
+      .accent { fill: #0c2d4b; stroke: #1f6feb; }
+      .warm { fill: #3d1d00; stroke: #db6d28; }
+      .title { fill: #e6edf3; }
+      .text, .label { fill: #9198a1; }
+      .code { fill: #4493f8; }
+      .arrow, .dashed { stroke: #6e7681; }
+      .head { fill: #6e7681; }
+      .grid { stroke: #30363d; }
+      .on { fill: #4493f8; } .on2 { fill: #f0883e; }
+      .pause { fill: #21262d; }
+    }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path class="head" d="M0,0 L10,5 L0,10 z"/>
+    </marker>
+  </defs>
+  <rect class="bg" width="880" height="316" rx="12"/>
+  <text class="title" x="24" y="32" text-anchor="start">From a relief to the biome of every place</text>
+  <rect class="box" x="24" y="120" width="130" height="84" rx="10" stroke-width="1.2"/>
+  <text class="title" x="89" y="150" text-anchor="middle">Relief</text>
+  <text class="text" x="89" y="172" text-anchor="middle">height of</text>
+  <text class="text" x="89" y="189" text-anchor="middle">every cell</text>
+  <rect class="accent" x="214" y="50" width="230" height="38" rx="8" stroke-width="1"/>
+  <text class="code" x="228" y="66" text-anchor="start">temperature</text>
+  <text class="text" x="228" y="81" text-anchor="start">falls with height</text>
+  <path class="arrow" d="M154,162 C184,162 184,69 212,69" marker-end="url(#arrow)"/>
+  <path class="arrow" d="M444,69 C470,69 470,162 494,162" marker-end="url(#arrow)"/>
+  <rect class="accent" x="214" y="96" width="230" height="38" rx="8" stroke-width="1"/>
+  <text class="code" x="228" y="112" text-anchor="start">precipitation</text>
+  <text class="text" x="228" y="127" text-anchor="start">wind, climb, rain shadow</text>
+  <path class="arrow" d="M154,162 C184,162 184,115 212,115" marker-end="url(#arrow)"/>
+  <path class="arrow" d="M444,115 C470,115 470,162 494,162" marker-end="url(#arrow)"/>
+  <rect class="accent" x="214" y="142" width="230" height="38" rx="8" stroke-width="1"/>
+  <text class="code" x="228" y="158" text-anchor="start">height, slope</text>
+  <text class="text" x="228" y="173" text-anchor="start">from the relief</text>
+  <path class="arrow" d="M154,162 C184,162 184,161 212,161" marker-end="url(#arrow)"/>
+  <path class="arrow" d="M444,161 C470,161 470,162 494,162" marker-end="url(#arrow)"/>
+  <rect class="accent" x="214" y="188" width="230" height="38" rx="8" stroke-width="1"/>
+  <text class="code" x="228" y="204" text-anchor="start">river</text>
+  <text class="text" x="228" y="219" text-anchor="start">drained area, flat floor</text>
+  <path class="arrow" d="M154,162 C184,162 184,207 212,207" marker-end="url(#arrow)"/>
+  <path class="arrow" d="M444,207 C470,207 470,162 494,162" marker-end="url(#arrow)"/>
+  <rect class="accent" x="214" y="234" width="230" height="38" rx="8" stroke-width="1"/>
+  <text class="code" x="228" y="250" text-anchor="start">coast</text>
+  <text class="text" x="228" y="265" text-anchor="start">near the sea, low, flat</text>
+  <path class="arrow" d="M154,162 C184,162 184,253 212,253" marker-end="url(#arrow)"/>
+  <path class="arrow" d="M444,253 C470,253 470,162 494,162" marker-end="url(#arrow)"/>
+  <text class="label" x="329" y="290" text-anchor="middle">the facts of a cell</text>
+  <rect class="box" x="498" y="112" width="160" height="100" rx="10" stroke-width="1.2"/>
+  <text class="title" x="578" y="140" text-anchor="middle">Biome table</text>
+  <text class="text" x="578" y="162" text-anchor="middle">the first rule whose</text>
+  <text class="text" x="578" y="179" text-anchor="middle">conditions hold wins</text>
+  <text class="code" x="578" y="200" text-anchor="middle">biomes:</text>
+  <path class="arrow" d="M658,162 H690" marker-end="url(#arrow)"/>
+  <rect class="box" x="694" y="112" width="162" height="100" rx="10" stroke-width="1.2"/>
+  <text class="title" x="775" y="140" text-anchor="middle">Regions</text>
+  <text class="text" x="775" y="162" text-anchor="middle">areas with a biome</text>
+  <text class="text" x="775" y="179" text-anchor="middle">of their own win</text>
+  <text class="code" x="775" y="200" text-anchor="middle">regions:</text>
+  <path class="arrow" d="M775,212 V242" marker-end="url(#arrow)"/>
+  <rect class="warm" x="540" y="246" width="316" height="48" rx="10" stroke-width="1.2"/>
+  <text class="code" x="698" y="266" text-anchor="middle">temperature · precipitation · biome</text>
+  <text class="text" x="698" y="284" text-anchor="middle">the fields, and the biomes event</text>
+</svg>
