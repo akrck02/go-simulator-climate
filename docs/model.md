@@ -74,6 +74,12 @@ moisture model carries it from where the wind comes
    frontal rain) plus `orographic` mm times what the air dropped there, measured against the most
    exposed 3 % of the land. Both are smoothed by `smoothing` km.
 
+Without `rain` settings the defaults are neutral, for every world to set its own: the wind from
+the west, as the westerlies of the middle latitudes blow; 1,000 mm of `background`, about the
+world's mean (2.6 mm a day; Adler et al. 2003, the GPCP analysis); and 1,000 mm of `orographic`,
+which doubles the rain on the most exposed windward slopes, a moderate case of what mountain
+ranges show (Roe 2005).
+
 <p align="center">
   <img alt="A cut from west to east through the highest peak: above, the yearly rain climbs from about 1500 mm on the west coast to about 2400 mm on the windward slope, then falls behind the ridge to about 600 mm in the rain shadow; below, the ground rises over a low hill to the 2,550-metre peak and falls to the east coast, with temperatures of 9, 10, −5 and 12 °C along the way" src="images/transect.svg" width="880">
 </p>
@@ -213,3 +219,9 @@ world's x and z, which move with `origin`, and the names of the biomes are not i
 the `biomes` event). The layer is in the relief's own kilometres east and north, like the scene
 builder's map and relief, and carries the names as `labels`; the sea is −1, with no name. [Getting started](getting-started.md) has a whole rules file
 and the way to the viewer.
+
+## References
+
+- Adler, R. F. et al. (2003). The version-2 Global Precipitation Climatology Project (GPCP) monthly
+  precipitation analysis (1979–present). *Journal of Hydrometeorology* 4.
+- Roe, G. H. (2005). Orographic precipitation. *Annual Review of Earth and Planetary Sciences* 33.
