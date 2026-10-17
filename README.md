@@ -115,6 +115,7 @@ season's snow line and foliage tint. The plugin never touches the renderer.
 
 | | |
 |---|---|
+| [The climate quest](docs/quest.md) | Give an island its weather in 5 levels. |
 | [Getting started](docs/getting-started.md) | The folders it needs, a whole rules file, running it without a window and in the viewer, the tests. |
 | [The climate model](docs/model.md) | How temperature, rain, river valleys, coasts, biomes, regions and seasons are worked out, with pictures. |
 | [How it works](docs/how-it-works.md) | How the plugin fits go-simulator, what happens at the start and every step, and how the pictures were made. |

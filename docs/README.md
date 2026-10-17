@@ -2,6 +2,7 @@
 
 | | Page | What is in it |
 |---|---|---|
+| 🏴‍☠️ | [The climate quest](quest.md) | Give an island its weather in 5 levels: a snow line, rain from the wind, cliffs and rivers, an old wood, a year of seasons. |
 | 🚀 | [Getting started](getting-started.md) | The folders it needs, a whole rules file, running it without a window and in the viewer, the tests. |
 | 🌦️ | [The climate model](model.md) | How temperature, rain, river valleys, coasts, biomes, regions and seasons are worked out, with maps and charts of a made-up island. |
 | 🔍 | [How it works](how-it-works.md) | How the plugin fits go-simulator, what happens at the start and every step, and how the pictures were made. |
