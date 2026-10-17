@@ -1,3 +1,5 @@
+<p align="center"><img alt="" src="images/logo.svg" width="120"></p>
+
 # Welcome to go-simulator-climate 👋
 
 **The climate plugin gives a simulated world its weather**: how warm, how wet, where it snows, and which landscape (*biome*) each place has: forest, meadow, steppe, rock.
