@@ -66,8 +66,8 @@ stages:
 The plugin starts with `go run` from this repository, so it needs no installing. The stage is a
 year of months, a quarter of a month a step; `pace` is how many real seconds a step takes in the
 viewer. Every key is in go-simulator's
-[rules files](https://github.com/akrck02/go-simulator/blob/main/docs/rules-files.md), and every
-parameter of the two rules in the [rules reference](rules.md).
+[rules files](https://github.com/akrck02/go-simulator/blob/main/docs/4-guides/1-rules-files.md), and every
+parameter of the two rules in the [rules reference](6-rules-reference.md).
 
 ## Without a window
 
@@ -88,7 +88,7 @@ grow vegetation. For [go-scene-builder](https://github.com/akrck02/go-scene-buil
 the terrain and sows each biome's vegetation from a layer (`-layer biome=…`), add `layer:
 biomes.json` to the climate rule: it saves `biomes.json` and `biomes.f32` next to the rules file,
 with the biome names as `labels` and in the relief's kilometres east and north, so the layer lines
-up with the relief whatever the `origin` (see [the model](model.md#use)).
+up with the relief whatever the `origin` (see [the model](4-the-model.md#use)).
 
 ## In the viewer
 
@@ -118,7 +118,7 @@ go run ./cmd/simulator -rules climate.yaml -advance 26 -capture summer.png islan
 ```
 
 The style gives every biome a colour under `terrain.biomes` (see go-scene-builder's
-[decoration](https://github.com/akrck02/go-scene-builder/blob/master/docs/decoration.md#biomes)), and
+[decoration](https://github.com/akrck02/go-scene-builder/blob/master/docs/6-decoration.md#biomes)), and
 `empty.geojson` is a map with no features. `-advance 26` steps the year 26 times before showing,
 to month 6.5.
 

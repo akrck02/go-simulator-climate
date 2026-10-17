@@ -5,7 +5,7 @@ plugin and ends with the island coloured by its **biomes**: snow, rock, forest, 
 
 ![The quest map: a road from START through 5 levels — Thermometer, Rainmaker, Naturalist, Gamekeeper and Almanac — to a final challenge, Forester](images/quest/quest-map.svg)
 
-We use the mountain island shaped in [the terrain quest](https://github.com/akrck02/go-simulator-terrain/blob/main/docs/quest.md)
+We use the mountain island shaped in [the terrain quest](https://github.com/akrck02/go-simulator-terrain/blob/main/docs/2-the-quest.md)
 (any relief will do). It gets cold as it climbs, wet where the west wind meets it and dry behind
 it; rivers, cliffs and beaches find their own biomes; an old wood stands where the story puts it;
 and a year passes, with snow and autumn colours.
@@ -139,7 +139,7 @@ some 600 metres.
 
 ![Achievement unlocked: Thermometer](images/quest/achievement-thermometer.svg)
 
-Learn more: [The model](model.md) · [Rules](rules.md#climate)
+Learn more: [The model](4-the-model.md) · [Rules](6-rules-reference.md#climate)
 
 ---
 
@@ -402,4 +402,4 @@ wood the story needed, and a year that turns.
 
 ---
 
-[← All the documentation](README.md)
+[← All the documentation](1-overview.md)
