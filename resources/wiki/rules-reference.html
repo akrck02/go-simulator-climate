@@ -1,0 +1,177 @@
+<h1 id="rules-of-the-climate-plugin">📋 Rules of the climate plugin</h1>
+
+<p>Version 1.0.0, protocol 2. Yearly temperature and rain over a relief, the biome of every place, and the turning seasons.</p>
+
+<p>This reference is generated from what the plugin itself tells the host (the <code>describe</code> message), so it always
+matches the code. Parameters go under <code>with:</code> in a rules file; see go-simulator&rsquo;s
+<a href="https://github.com/akrck02/go-simulator/blob/main/docs/4-guides/1-rules-files.md" target="_blank">rules file reference</a>.</p>
+
+<table>
+<thead>
+<tr>
+<th>Rule</th>
+<th>What it does</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><a href="#climate"><code>climate</code></a></td>
+<td>Works out temperature (fields: temperature, °C), rain (precipitation, mm a year) and biome (biome: index into the names of the &ldquo;biomes&rdquo; event, −1 for the sea) at the start, and again when the world&rsquo;s ground changes.</td>
+</tr>
+
+<tr>
+<td><a href="#seasons"><code>seasons</code></a></td>
+<td>Turns the year: moves the snow line with the season&rsquo;s temperature and gives foliage the season&rsquo;s colour (environment).</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="climate"><code>climate</code></h2>
+
+<p>Works out temperature (fields: temperature, °C), rain (precipitation, mm a year) and biome (biome: index into the names of the &ldquo;biomes&rdquo; event, −1 for the sea) at the start, and again when the world&rsquo;s ground changes.</p>
+
+<ul>
+<li><strong>Reads:</strong> fields <code>elevation</code>, <code>drainage_area</code></li>
+<li><strong>Writes:</strong> <code>temperature</code>, <code>precipitation</code>, <code>biome</code></li>
+</ul>
+
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Meaning</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><code>relief</code></td>
+<td>text</td>
+<td></td>
+<td>relief header (relieve.json with relieve.f32 next to it), km east and north; without it, the world&rsquo;s elevation</td>
+</tr>
+
+<tr>
+<td><code>origin</code></td>
+<td>list</td>
+<td></td>
+<td>[east, north] of the world&rsquo;s origin: x = east − origin[0], z = origin[1] − north</td>
+</tr>
+
+<tr>
+<td><code>cell</code></td>
+<td>number</td>
+<td><code>0.1</code></td>
+<td>km: cell of the fields</td>
+</tr>
+
+<tr>
+<td><code>temperature</code></td>
+<td>map</td>
+<td></td>
+<td>{sea_level: °C, lapse: °C per km, northward: °C per 10 km}</td>
+</tr>
+
+<tr>
+<td><code>rain</code></td>
+<td>map</td>
+<td></td>
+<td>{wind_from: degrees, background: mm, orographic: mm, …}</td>
+</tr>
+
+<tr>
+<td><code>terrain</code></td>
+<td>map</td>
+<td></td>
+<td>{river_area: km², river_slope, coast_reach: km, coast_low: m, coast_slope}</td>
+</tr>
+
+<tr>
+<td><code>biomes</code></td>
+<td>list</td>
+<td></td>
+<td>rules: [{biome, when: {temperature, precipitation, height, slope: {min, max}, river, coast}}]</td>
+</tr>
+
+<tr>
+<td><code>regions</code></td>
+<td>list</td>
+<td></td>
+<td>[{biome, ellipse: {centre, radii} | polygon, when}]: the world&rsquo;s own biomes</td>
+</tr>
+
+<tr>
+<td><code>layer</code></td>
+<td>text</td>
+<td></td>
+<td>biomes.json: also save the biomes as a layer for go-scene-builder (-layer biome=…), with their names, in km east and north</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="seasons"><code>seasons</code></h2>
+
+<p>Turns the year: moves the snow line with the season&rsquo;s temperature and gives foliage the season&rsquo;s colour (environment).</p>
+
+<ul>
+<li><strong>Reads:</strong> the environment</li>
+<li><strong>Writes:</strong> <code>environment</code></li>
+</ul>
+
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Meaning</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><code>year_length</code></td>
+<td>number</td>
+<td><code>240</code></td>
+<td>units of the stage&rsquo;s time a year lasts</td>
+</tr>
+
+<tr>
+<td><code>warmest</code></td>
+<td>number</td>
+<td><code>0.3</code></td>
+<td>when it is warmest, as a share of the year</td>
+</tr>
+
+<tr>
+<td><code>temperature</code></td>
+<td>map</td>
+<td></td>
+<td>{sea_level: °C, lapse: °C per km, amplitude: °C above and below the mean}</td>
+</tr>
+
+<tr>
+<td><code>snow_at</code></td>
+<td>number</td>
+<td><code>0</code></td>
+<td>°C under which the ground is snowy</td>
+</tr>
+
+<tr>
+<td><code>snow_blend</code></td>
+<td>number</td>
+<td><code>150</code></td>
+<td>metres over which the snow fades in</td>
+</tr>
+
+<tr>
+<td><code>foliage</code></td>
+<td>list</td>
+<td></td>
+<td>[{at: share of the year, color, amount}], interpolated around the year</td>
+</tr>
+</tbody>
+</table>

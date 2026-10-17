@@ -1,0 +1,503 @@
+<h1 id="the-climate-quest">The climate quest</h1>
+
+<p>Give an island its weather, one level at a time. Each level teaches one piece of the climate
+plugin and ends with the island coloured by its <strong>biomes</strong>: snow, rock, forest, meadow, steppe.</p>
+
+<p><img src="./images/quest/quest-map.svg" alt="The quest map: a road from START through 5 levels — Thermometer, Rainmaker, Naturalist, Gamekeeper and Almanac — to a final challenge, Forester" /></p>
+
+<p>We use the mountain island shaped in <a href="https://github.com/akrck02/go-simulator-terrain/blob/main/docs/2-the-quest.md" target="_blank">the terrain quest</a>
+(any relief will do). It gets cold as it climbs, wet where the west wind meets it and dry behind
+it; rivers, cliffs and beaches find their own biomes; an old wood stands where the story puts it;
+and a year passes, with snow and autumn colours.</p>
+
+<hr>
+
+<p>Every level has the same shape: <strong>the idea</strong> (explained with something from everyday life), <strong>the
+rules</strong>, a <strong>checkpoint</strong> to know it works, and an optional <strong>bonus</strong>.</p>
+
+<hr>
+
+<h2 id="before-you-start">Before you start</h2>
+
+<p>You need Go 1.25 and GEOS (<code>sudo apt install libgeos-dev</code>, <code>brew install geos</code>). Clone the
+projects side by side and make a folder for the quest:</p>
+<pre><code class="language-sh">git clone https://github.com/akrck02/go-renderer
+git clone https://github.com/akrck02/go-scene-builder
+git clone https://github.com/akrck02/go-simulator
+git clone https://github.com/akrck02/go-simulator-climate
+mkdir weather <span class="o">&amp;&amp;</span> <span class="nb">cd</span> weather
+</code></pre>
+
+<p>Put the island&rsquo;s relief in it as <code>island.json</code> and <code>island.f32</code>: from the terrain quest, the end
+snapshot <code>results/island 200 elevation.json</code> and <code>.f32</code>, renamed. (Or write your own with the
+terrain quest&rsquo;s <code>island/main.go</code>.)</p>
+
+<h3 id="looking-at-the-biomes">Looking at the biomes</h3>
+
+<p>The climate rule can save its biomes as a <strong>layer</strong> that go-scene-builder colours the terrain with.
+Two small files, made once. <code>empty.geojson</code>, a map with nothing on it:</p>
+<pre><code class="language-json"><span class="p">{</span><span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;FeatureCollection&#34;</span><span class="p">,</span> <span class="nt">&#34;properties&#34;</span><span class="p">:</span> <span class="p">{</span><span class="nt">&#34;units&#34;</span><span class="p">:</span> <span class="s2">&#34;km&#34;</span><span class="p">},</span> <span class="nt">&#34;features&#34;</span><span class="p">:</span> <span class="p">[]}</span>
+</code></pre>
+
+<p><code>view.yaml</code>, a colour for every biome:</p>
+<pre><code class="language-yaml"><span class="nt">units</span><span class="p">:</span> <span class="l">m</span>
+<span class="nt">chunk</span><span class="p">:</span> <span class="m">2</span>
+<span class="nt">environment</span><span class="p">:</span> {<span class="nt">sun</span><span class="p">:</span> <span class="nt">[220, 35], water_level</span><span class="p">:</span> <span class="m">0</span>}
+<span class="nt">terrain</span><span class="p">:</span>
+  <span class="nt">color</span><span class="p">:</span> <span class="s2">&#34;#8a8674&#34;</span>
+  <span class="nt">biomes</span><span class="p">:</span>
+    <span class="nt">snow</span><span class="p">:</span> {<span class="nt">color</span><span class="p">:</span> <span class="s2">&#34;#eeeeea&#34;</span>}
+    <span class="nt">rock</span><span class="p">:</span> {<span class="nt">color</span><span class="p">:</span> <span class="s2">&#34;#8a8674&#34;</span>}
+    <span class="nt">meadow</span><span class="p">:</span> {<span class="nt">color</span><span class="p">:</span> <span class="s2">&#34;#a7b46a&#34;</span>}
+    <span class="nt">steppe</span><span class="p">:</span> {<span class="nt">color</span><span class="p">:</span> <span class="s2">&#34;#c8b47a&#34;</span>}
+    <span class="nt">forest</span><span class="p">:</span> {<span class="nt">color</span><span class="p">:</span> <span class="s2">&#34;#4f6b3a&#34;</span>}
+    <span class="nt">riverside</span><span class="p">:</span> {<span class="nt">color</span><span class="p">:</span> <span class="s2">&#34;#6f9a5a&#34;</span>}
+    <span class="nt">coast</span><span class="p">:</span> {<span class="nt">color</span><span class="p">:</span> <span class="s2">&#34;#d9cfa3&#34;</span>}
+    <span class="nt">old wood</span><span class="p">:</span> {<span class="nt">color</span><span class="p">:</span> <span class="s2">&#34;#3b5230&#34;</span>}
+</code></pre>
+
+<p>After every run:</p>
+<pre><code class="language-sh">go run ../go-scene-builder/cmd/build-scene -map empty.geojson -relief island.json -layer <span class="nv">biome</span><span class="o">=</span>biomes.json -style view.yaml -out island.glb
+go run ../go-renderer/cmd/visor island.glb
+</code></pre>
+
+<p>The pictures were taken with <code>-zoom 0.75 -sun-azimuth 250 -sun-elevation 25</code>.</p>
+
+<hr>
+
+<h2 id="level-1-the-thermometer">Level 1 · The Thermometer</h2>
+
+<table>
+<thead>
+<tr>
+<th>Mission</th>
+<th>Pieces</th>
+<th>Time</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Colder as you climb, and snow on top</td>
+<td><code>climate</code>, <code>temperature</code>, biome rules, <code>layer</code></td>
+<td>8 min</td>
+</tr>
+</tbody>
+</table>
+
+<h4 id="the-idea">The idea</h4>
+
+<p>Climb a mountain and your <strong>ears pop and your hands get cold</strong>: the air cools about 6.5 °C for every
+kilometre up. That is the <strong>lapse rate</strong>. Start from the temperature at the sea and the height of
+every cell says how cold it is.</p>
+
+<p><strong>Biomes</strong> are a list of rules read top to bottom, like a <strong>sorting hat</strong>: each cell gets the first
+biome whose conditions it meets. The last rule, with no conditions, catches everything left.</p>
+
+<h4 id="build-it">Build it</h4>
+
+<p><code>rules.yaml</code>:</p>
+<pre><code class="language-yaml"><span class="nt">plugins</span><span class="p">:</span>
+  - <span class="nt">name</span><span class="p">:</span> <span class="l">climate</span>
+    <span class="nt">command</span><span class="p">:</span> <span class="p">[</span><span class="l">go, run, .]</span>
+    <span class="nt">directory</span><span class="p">:</span> <span class="l">../go-simulator-climate</span>
+
+<span class="nt">stages</span><span class="p">:</span>
+  - <span class="nt">name</span><span class="p">:</span> <span class="l">year</span>
+    <span class="nt">clock</span><span class="p">:</span> {<span class="nt">unit</span><span class="p">:</span> <span class="nt">month, from</span><span class="p">:</span> <span class="nt">0, to</span><span class="p">:</span> <span class="nt">1, step</span><span class="p">:</span> <span class="m">1</span>}
+    <span class="nt">snapshots</span><span class="p">:</span> <span class="p">[</span><span class="m">1</span><span class="p">]</span>
+    <span class="nt">snapshot_fields</span><span class="p">:</span> <span class="p">[</span><span class="l">temperature, biome]</span>
+    <span class="nt">rules</span><span class="p">:</span>
+      - <span class="nt">rule</span><span class="p">:</span> <span class="l">climate</span>
+        <span class="nt">with</span><span class="p">:</span>
+          <span class="nt">relief</span><span class="p">:</span> <span class="l">island.json</span>
+          <span class="nt">origin</span><span class="p">:</span> <span class="p">[</span><span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">]</span>
+          <span class="nt">layer</span><span class="p">:</span> <span class="l">biomes.json</span>
+          <span class="nt">temperature</span><span class="p">:</span> {<span class="nt">sea_level</span><span class="p">:</span> <span class="nt">12, lapse</span><span class="p">:</span> <span class="m">6.5</span>}
+          <span class="nt">biomes</span><span class="p">:</span>
+            - {<span class="nt">biome</span><span class="p">:</span> <span class="nt">snow, when</span><span class="p">:</span> {<span class="nt">temperature</span><span class="p">:</span> {<span class="nt">max</span><span class="p">:</span> <span class="m">6</span>}}}
+            - {<span class="nt">biome</span><span class="p">:</span> <span class="l">meadow}</span>
+</code></pre>
+<pre><code class="language-sh">go run ../go-simulator/cmd/simulate -rules rules.yaml -output results/
+</code></pre>
+
+<h4 id="checkpoint">Checkpoint</h4>
+
+<p><code>biomes.json</code> and <code>biomes.f32</code> appear next to the rules file, and <code>results/</code> holds
+<code>year 1 temperature</code> and <code>year 1 biome</code>. On the island, a cap of snow above about a kilometre, and
+meadow everywhere else.</p>
+
+<p><img src="./images/quest/level-1.jpg" alt="Level 1: meadow all over the island, snow on its peak" /></p>
+
+<h4 id="bonus-optional-an-ice-age">Bonus (optional): an ice age</h4>
+
+<details>
+<summary>🔓 Show the solution</summary>
+
+`temperature: {sea_level: 8, lapse: 6.5}`: four degrees colder at the sea, and the snow comes down
+some 600 metres.
+
+</details>
+
+<p><img src="./images/quest/achievement-thermometer.svg" alt="Achievement unlocked: Thermometer" /></p>
+
+<p>Learn more: <a href="./the-model">The model</a> · <a href="./rules-reference">Rules</a></p>
+
+<hr>
+
+<h2 id="level-2-the-rainmaker">Level 2 · The Rainmaker</h2>
+
+<table>
+<thead>
+<tr>
+<th>Mission</th>
+<th>Pieces</th>
+<th>Time</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Wet where the wind climbs, dry behind</td>
+<td><code>rain</code>, precipitation in biome rules</td>
+<td>8 min</td>
+</tr>
+</tbody>
+</table>
+
+<h4 id="the-idea-1">The idea</h4>
+
+<p>Wind from the sea carries water. When it meets a mountain it <strong>climbs, cools and rains</strong>, like a
+<strong>sponge squeezed</strong> on the way up; past the top it comes down dry. So the side facing the wind is
+wet and green, and the other side, in its <strong>rain shadow</strong>, is dry.</p>
+
+<h4 id="build-it-1">Build it</h4>
+
+<p>In the climate rule, a west wind, and biomes by rain (millimetres a year):</p>
+<pre><code class="language-yaml">          <span class="nt">rain</span><span class="p">:</span> {<span class="nt">wind_from</span><span class="p">:</span> <span class="nt">270, background</span><span class="p">:</span> <span class="nt">450, orographic</span><span class="p">:</span> <span class="m">1400</span>}
+          <span class="nt">biomes</span><span class="p">:</span>
+            - {<span class="nt">biome</span><span class="p">:</span> <span class="nt">snow, when</span><span class="p">:</span> {<span class="nt">temperature</span><span class="p">:</span> {<span class="nt">max</span><span class="p">:</span> <span class="m">6</span>}}}
+            - {<span class="nt">biome</span><span class="p">:</span> <span class="nt">forest, when</span><span class="p">:</span> {<span class="nt">precipitation</span><span class="p">:</span> {<span class="nt">min</span><span class="p">:</span> <span class="m">1500</span>}}}
+            - {<span class="nt">biome</span><span class="p">:</span> <span class="nt">meadow, when</span><span class="p">:</span> {<span class="nt">precipitation</span><span class="p">:</span> {<span class="nt">min</span><span class="p">:</span> <span class="m">1250</span>}}}
+            - {<span class="nt">biome</span><span class="p">:</span> <span class="l">steppe}</span>
+</code></pre>
+
+<p><code>wind_from: 270</code> is a wind from the west; <code>orographic</code> is how much more rain the climb brings.
+Add <code>precipitation</code> to <code>snapshot_fields</code> to see the rain itself.</p>
+
+<h4 id="checkpoint-1">Checkpoint</h4>
+
+<p>A ring of dark forest on the high, wet slopes; meadow below; and the east side, behind the
+mountain, turns to tan steppe.</p>
+
+<p><img src="./images/quest/level-2.jpg" alt="Level 2: forest on the wet slopes, steppe on the dry east side" /></p>
+
+<h4 id="bonus-optional-an-east-wind">Bonus (optional): an east wind</h4>
+
+<details>
+<summary>🔓 Show the solution</summary>
+
+`wind_from: 90`: the forest and the steppe swap sides.
+
+</details>
+
+<p><img src="./images/quest/achievement-rainmaker.svg" alt="Achievement unlocked: Rainmaker" /></p>
+
+<hr>
+
+<h2 id="level-3-the-naturalist">Level 3 · The Naturalist</h2>
+
+<table>
+<thead>
+<tr>
+<th>Mission</th>
+<th>Pieces</th>
+<th>Time</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Cliffs, riverbanks and beaches</td>
+<td><code>slope</code>, <code>river</code>, <code>coast</code>, <code>terrain</code></td>
+<td>6 min</td>
+</tr>
+</tbody>
+</table>
+
+<h4 id="the-idea-2">The idea</h4>
+
+<p>A <strong>naturalist</strong> knows that what grows depends on more than weather: nothing roots on a <strong>cliff</strong>,
+willows line the <strong>rivers</strong>, and the <strong>shore</strong> has its own plants. The plugin works out the slope,
+where water gathers into rivers and where the coast is, and the biome rules can ask for them.</p>
+
+<p>Order matters: the sorting hat takes the <strong>first</strong> rule that fits, so the special places come
+before the weather.</p>
+
+<h4 id="build-it-2">Build it</h4>
+<pre><code class="language-yaml">          <span class="nt">terrain</span><span class="p">:</span> {<span class="nt">river_area</span><span class="p">:</span> <span class="nt">0.5, river_slope</span><span class="p">:</span> <span class="m">0.05</span>}
+          <span class="nt">biomes</span><span class="p">:</span>
+            - {<span class="nt">biome</span><span class="p">:</span> <span class="nt">snow, when</span><span class="p">:</span> {<span class="nt">temperature</span><span class="p">:</span> {<span class="nt">max</span><span class="p">:</span> <span class="m">6</span>}}}
+            - {<span class="nt">biome</span><span class="p">:</span> <span class="nt">rock, when</span><span class="p">:</span> {<span class="nt">slope</span><span class="p">:</span> {<span class="nt">min</span><span class="p">:</span> <span class="m">0.6</span>}}}
+            - {<span class="nt">biome</span><span class="p">:</span> <span class="nt">riverside, when</span><span class="p">:</span> {<span class="nt">river</span><span class="p">:</span> <span class="kc">true</span>}}
+            - {<span class="nt">biome</span><span class="p">:</span> <span class="nt">coast, when</span><span class="p">:</span> {<span class="nt">coast</span><span class="p">:</span> <span class="kc">true</span>}}
+            - {<span class="nt">biome</span><span class="p">:</span> <span class="nt">forest, when</span><span class="p">:</span> {<span class="nt">precipitation</span><span class="p">:</span> {<span class="nt">min</span><span class="p">:</span> <span class="m">1500</span>}}}
+            - {<span class="nt">biome</span><span class="p">:</span> <span class="nt">meadow, when</span><span class="p">:</span> {<span class="nt">precipitation</span><span class="p">:</span> {<span class="nt">min</span><span class="p">:</span> <span class="m">1250</span>}}}
+            - {<span class="nt">biome</span><span class="p">:</span> <span class="l">steppe}</span>
+</code></pre>
+
+<h4 id="checkpoint-2">Checkpoint</h4>
+
+<p>Grey rock on the steepest cliffs of the coast, pale sand along the shore, and greener strips where
+the rivers run.</p>
+
+<p><img src="./images/quest/level-3.jpg" alt="Level 3: rock on the cliffs and sand along the shore" /></p>
+
+<p><img src="./images/quest/achievement-naturalist.svg" alt="Achievement unlocked: Naturalist" /></p>
+
+<hr>
+
+<h2 id="level-4-the-gamekeeper">Level 4 · The Gamekeeper</h2>
+
+<table>
+<thead>
+<tr>
+<th>Mission</th>
+<th>Pieces</th>
+<th>Time</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>An old wood that the story puts there</td>
+<td><code>regions</code></td>
+<td>5 min</td>
+</tr>
+</tbody>
+</table>
+
+<h4 id="the-idea-3">The idea</h4>
+
+<p>Some places are not where the weather says, but where <strong>the story</strong> says: a royal hunting forest,
+an old wood with a name. A <strong>region</strong> is a <strong>stencil</strong> laid on the map: inside it, a biome of its
+own, where its conditions hold. <code>ragged</code> frays its edge so it does not look drawn with a compass.</p>
+
+<h4 id="build-it-3">Build it</h4>
+
+<p>After <code>biomes</code>, in the climate rule (the centre is in kilometres east and north):</p>
+<pre><code class="language-yaml">          <span class="nt">regions</span><span class="p">:</span>
+            - {<span class="nt">biome</span><span class="p">:</span> <span class="nt">old wood, ellipse</span><span class="p">:</span> {<span class="nt">centre</span><span class="p">:</span> <span class="nt">[-1.5, -1], radii</span><span class="p">:</span> <span class="nt">[1.2, 0.8]}, ragged</span><span class="p">:</span> <span class="nt">0.15, when</span><span class="p">:</span> {<span class="nt">height</span><span class="p">:</span> {<span class="nt">min</span><span class="p">:</span> <span class="m">100</span>}}}
+</code></pre>
+
+<h4 id="checkpoint-3">Checkpoint</h4>
+
+<p>A darker patch of old wood in the south-west, its edge frayed, never on the beach (it asks for
+100 m at least). The <code>biomes</code> event in <code>results/events.jsonl</code> lists it among the names.</p>
+
+<p><img src="./images/quest/level-4.jpg" alt="Level 4: a darker old wood in the south-west of the island" /></p>
+
+<p><img src="./images/quest/achievement-gamekeeper.svg" alt="Achievement unlocked: Gamekeeper" /></p>
+
+<hr>
+
+<h2 id="level-5-the-almanac">Level 5 · The Almanac</h2>
+
+<table>
+<thead>
+<tr>
+<th>Mission</th>
+<th>Pieces</th>
+<th>Time</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>A year of seasons, live in the viewer</td>
+<td><code>seasons</code>, a month clock, the live simulator</td>
+<td>8 min</td>
+</tr>
+</tbody>
+</table>
+
+<h4 id="the-idea-4">The idea</h4>
+
+<p>An <strong>almanac</strong> tells what each month brings. The <code>seasons</code> rule moves the <strong>snow line</strong> down in
+winter and up in summer, and tints the leaves through the year: fresh green in spring, dark in
+summer, orange in autumn. The renderer draws it on the scene as it runs.</p>
+
+<h4 id="build-it-4">Build it</h4>
+
+<p>A year of months, a quarter of a month every half second, and the seasons after the climate:</p>
+<pre><code class="language-yaml">    <span class="nt">clock</span><span class="p">:</span> {<span class="nt">unit</span><span class="p">:</span> <span class="nt">month, from</span><span class="p">:</span> <span class="nt">0, to</span><span class="p">:</span> <span class="nt">12, step</span><span class="p">:</span> <span class="nt">0.25, pace</span><span class="p">:</span> <span class="m">0.5</span>}
+    <span class="nt">snapshots</span><span class="p">:</span> <span class="p">[</span><span class="m">0</span><span class="p">]</span>
+    <span class="nt">rules</span><span class="p">:</span>
+      - <span class="nt">rule</span><span class="p">:</span> <span class="l">climate</span>
+        <span class="nt">with</span><span class="p">:</span> { <span class="l">… as before … }</span>
+      - <span class="nt">rule</span><span class="p">:</span> <span class="l">seasons</span>
+        <span class="nt">with</span><span class="p">:</span>
+          <span class="nt">year_length</span><span class="p">:</span> <span class="m">12</span>
+          <span class="nt">warmest</span><span class="p">:</span> <span class="m">0.55</span>
+          <span class="nt">temperature</span><span class="p">:</span> {<span class="nt">sea_level</span><span class="p">:</span> <span class="nt">12, lapse</span><span class="p">:</span> <span class="nt">6.5, amplitude</span><span class="p">:</span> <span class="m">8</span>}
+          <span class="nt">snow_at</span><span class="p">:</span> <span class="m">0</span>
+          <span class="nt">snow_blend</span><span class="p">:</span> <span class="m">150</span>
+          <span class="nt">foliage</span><span class="p">:</span>
+            - {<span class="nt">at</span><span class="p">:</span> <span class="nt">0.25, color</span><span class="p">:</span> <span class="s2">&#34;#9cc35a&#34;</span><span class="nt">, amount</span><span class="p">:</span> <span class="m">0.15</span>}
+            - {<span class="nt">at</span><span class="p">:</span> <span class="nt">0.5, color</span><span class="p">:</span> <span class="s2">&#34;#5d7a3c&#34;</span><span class="nt">, amount</span><span class="p">:</span> <span class="m">0</span>}
+            - {<span class="nt">at</span><span class="p">:</span> <span class="nt">0.8, color</span><span class="p">:</span> <span class="s2">&#34;#c8752f&#34;</span><span class="nt">, amount</span><span class="p">:</span> <span class="m">0.6</span>}
+            - {<span class="nt">at</span><span class="p">:</span> <span class="nt">0.95, color</span><span class="p">:</span> <span class="s2">&#34;#7a6e5f&#34;</span><span class="nt">, amount</span><span class="p">:</span> <span class="m">0.6</span>}
+</code></pre>
+
+<p>Build the scene as before, then run it <strong>live</strong>:</p>
+<pre><code class="language-sh">go run ../go-simulator/cmd/simulator -rules rules.yaml island.glb
+</code></pre>
+
+<h4 id="checkpoint-4">Checkpoint</h4>
+
+<p>The year turns: in winter, snow down the mountain&rsquo;s shoulders; by summer, only the snow biome on
+the peak. <code>-advance 26</code> starts in summer.</p>
+
+<p><img src="./images/quest/level-5-winter.jpg" alt="Level 5 in winter: snow over the upper slopes" /></p>
+
+<p><img src="./images/quest/level-5-summer.jpg" alt="Level 5 in summer: only the peak is white" /></p>
+
+<h4 id="bonus-optional-a-harsher-winter">Bonus (optional): a harsher winter</h4>
+
+<details>
+<summary>🔓 Show the solution</summary>
+
+`amplitude: 12`: winters colder and summers hotter; the snow line swings further.
+
+</details>
+
+<p><img src="./images/quest/achievement-almanac.svg" alt="Achievement unlocked: Almanac" /></p>
+
+<hr>
+
+<h2 id="final-challenge-forester">Final challenge · Forester</h2>
+
+<p>Fill the forest with <strong>trees</strong>: firs and oaks in the forest, oaks in the old wood and along the
+rivers, and watch them turn <strong>orange in autumn</strong>.</p>
+
+<blockquote>
+<p><strong>Hint:</strong> go-scene-builder sows models over a biome: <code>terrain.biomes.&lt;name&gt;.decorate</code> with the
+<code>scatter</code> recipe, and a model library. A part with <code>material: {foliage: true}</code> takes the
+seasons&rsquo; tint.</p>
+</blockquote>
+
+<p>Try it on your own first, then compare with the solution.</p>
+
+<p><img src="./images/quest/final-summer.jpg" alt="The final challenge in summer: a slope covered in firs and oaks" /></p>
+
+<p><img src="./images/quest/final-autumn.jpg" alt="The same slope in autumn: the oaks turned orange" /></p>
+
+<details>
+<summary>🔓 Show the solution</summary>
+
+`models.yaml`:
+
+<pre><code>models:
+  fir:
+    variants: 3
+    vary: {color: 0.1, scale: [0.8, 1.3]}
+    parts:
+      - {shape: cylinder, radius: 0.3, height: 2, color: &quot;#5a4632&quot;}
+      - {shape: cone, radius: 2.2, height: 9, at: [0, 1.5, 0], color: &quot;#2f4a2c&quot;, material: {foliage: true}, move: 0.2, grow: 0.15}
+  oak:
+    variants: 3
+    vary: {color: 0.12, warmth: 0.06, scale: [0.8, 1.25]}
+    parts:
+      - {shape: cylinder, radius: 0.35, top_radius: 0.25, height: 3, color: &quot;#5a4632&quot;}
+      - {shape: blob, size: [6, 5, 6], at: [0, 5, 0], wobble: 0.15, move: 0.6, grow: 0.2, color: &quot;#56713a&quot;, material: {foliage: true}}</code></pre>
+
+In `view.yaml`, `models: [models.yaml]` after `units`, and:
+
+<pre><code>    forest: {color: "#4f6b3a", decorate: [{recipe: scatter, density: 0.002, models: {fir: 2, oak: 1}}]}
+    old wood: {color: "#3b5230", decorate: [{recipe: scatter, density: 0.003, models: {oak: 1}}]}
+    riverside: {color: "#6f9a5a", decorate: [{recipe: scatter, density: 0.002, models: {oak: 1}}]}</code></pre>
+
+Build again and run live with `-advance 39` for October; `-zoom 0.12 -look-at -1.2,0.6` comes close
+to the western slope.
+
+</details>
+
+<p><img src="./images/quest/achievement-final.svg" alt="Rare achievement unlocked: Forester" /></p>
+
+<hr>
+
+<h2 id="well-done">Well done</h2>
+
+<p><img src="./images/quest/achievements-all.svg" alt="All six achievements: Thermometer, Rainmaker, Naturalist, Gamekeeper, Almanac and Forester" /></p>
+
+<p>Your island has a climate worked out from its own shape, biomes in a sorting hat you wrote, an old
+wood the story needed, and a year that turns.</p>
+
+<h3 id="ideas-to-keep-going">Ideas to keep going</h3>
+
+<table>
+<thead>
+<tr>
+<th>Idea</th>
+<th>Difficulty</th>
+<th>Hint</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Colder to the north</td>
+<td>⭐</td>
+<td><code>temperature.northward</code>: °C per 10 km</td>
+</tr>
+
+<tr>
+<td>A wetter year</td>
+<td>⭐</td>
+<td><code>background: 900</code></td>
+</tr>
+
+<tr>
+<td>Vegetation that grows by itself</td>
+<td>⭐⭐⭐</td>
+<td><a href="https://github.com/akrck02/go-simulator-flora" target="_blank">The flora plugin</a> reads these fields and grows forests over centuries</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="troubleshooting">Troubleshooting</h2>
+
+<table>
+<thead>
+<tr>
+<th>You see</th>
+<th>Why, and what to do</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Everything is one biome</td>
+<td>The thresholds miss your island: snapshot <code>temperature</code> and <code>precipitation</code> and look at their range</td>
+</tr>
+
+<tr>
+<td>The layer does not line up with the island</td>
+<td>Use <code>origin: [0, 0]</code> with a snapshot of the terrain plugin, or save the layer with <code>layer:</code> rather than using the snapshot&rsquo;s <code>year 1 biome</code></td>
+</tr>
+
+<tr>
+<td>No snow moves live</td>
+<td>The <code>seasons</code> rule needs the month clock with a <code>pace</code>, and the scene must have ground facing up</td>
+</tr>
+
+<tr>
+<td><code>pkg-config: geos not found</code></td>
+<td>GEOS is needed by go-scene-builder</td>
+</tr>
+</tbody>
+</table>
+
+<hr>
+
+<p><a href="./overview">← All the documentation</a></p>

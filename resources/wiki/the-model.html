@@ -1,0 +1,244 @@
+<h1 id="the-climate-model">🌦️ The climate model</h1>
+
+<p>Where is it cold? Where does it rain? What grows there? The climate plugin answers these three
+questions for every place of a map, starting only from its relief, so that the answers always agree
+with each other and with the land: no snow at the beach, no rainforest in a rain shadow.</p>
+
+<p><img src="./images/climate.jpg" alt="The example island: mean temperature, yearly rain and the biomes that follow from them" /></p>
+
+<p><em>Colder on the mountain, wetter on the slope that faces the wind, and the biomes that follow.</em></p>
+
+<p align="center">
+  <img alt="From the relief to the biome of every place: the relief gives every cell its facts (temperature, which falls with height; precipitation, from the wind, the climb and the rain shadow; height and slope; river, from the drained area and a flat floor; coast, near the sea, low and flat); the biome table picks the first rule whose conditions hold, regions with a biome of their own win, and out come the temperature, precipitation and biome fields and the biomes event" src="images/model.svg" width="880">
+</p>
+
+<p>It works the climate out at the start and publishes three fields and an event:</p>
+
+<table>
+<thead>
+<tr>
+<th>Output</th>
+<th>Content</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>field <code>temperature</code></td>
+<td>mean yearly temperature, °C</td>
+</tr>
+
+<tr>
+<td>field <code>precipitation</code></td>
+<td>yearly rain and snow, mm</td>
+</tr>
+
+<tr>
+<td>field <code>biome</code></td>
+<td>index into the names of the <code>biomes</code> event, −1 for the sea</td>
+</tr>
+
+<tr>
+<td>event <code>biomes</code></td>
+<td><code>{&quot;names&quot;: […]}</code>, the biome of every index</td>
+</tr>
+</tbody>
+</table>
+<p>The grid has the cell given by <code>cell</code> (km), over the relief&rsquo;s extent; <code>origin</code> places the relief&rsquo;s
+kilometres east and north on the world (<code>x = east − origin[0]</code>, <code>z = origin[1] − north</code>).</p>
+
+<p>The relief is the <code>relief</code> file or, without one, the world&rsquo;s <code>elevation</code>, as the
+<a href="https://github.com/akrck02/go-simulator-terrain" target="_blank">terrain plugin</a> publishes it (put it first). On
+the world&rsquo;s ground the climate also takes the world&rsquo;s <code>drainage_area</code> when there is one (see
+below), and when that ground changes, because the terrain&rsquo;s <code>erosion</code> rule moved it, the climate is
+worked out again in the step after and published again.</p>
+
+<p>The maps and charts below are of a made-up island, 20 km by 15 km, with a ridge of about 2,550
+metres in the east, run with the rules file in <a href="./getting-started">getting started</a>.</p>
+
+<h2 id="temperature">Temperature</h2>
+
+<p>Air gets colder as you climb, by about 6.5 °C every kilometre. That is most of the story:</p>
+<pre><code>temperature = sea_level − lapse × height_km + northward × (north − middle of the map) / 10
+</code></pre>
+
+<p><code>sea_level</code> is the mean at sea level (°C), <code>lapse</code> the degrees lost per kilometre of height (6.5 is
+the standard atmosphere) and <code>northward</code> an optional gradient per 10 km (negative: colder to the
+north). Sea cells take the sea-level value.</p>
+
+<p align="center">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/temperature-dark.png">
+  <img alt="Map of the made-up island's mean yearly temperature: 12 °C at sea level, warm lowlands, and below −4 °C on the top of the ridge" src="images/temperature-light.png" width="560">
+</picture>
+</p>
+
+<p>With <code>sea_level: 12</code> and <code>lapse: 6.5</code>, the coast is at 12 °C and the top of the ridge, about 2.5 km
+up, at about −4.5 °C.</p>
+
+<h2 id="rain">Rain</h2>
+
+<p>Rain is the interesting part. Moist air blows in from one side; when it has to climb a mountain it
+cools and drops its water on the slope facing the wind, and by the time it comes down the other
+side it is dry: the rain shadow. The plugin follows that air across the map. A semi-Lagrangian
+moisture model carries it from where the wind comes
+(<code>wind_from</code>, degrees clockwise from north):</p>
+
+<ol>
+<li>The relief the air feels is smoothed (<code>relief_scale</code>, km), and the moisture is carried on a
+coarser grid (<code>calculation_cell</code>, km), downwind, cell by cell: every cell takes the air of the
+cell upwind.</li>
+<li>Over land the air drops a share of its moisture every cell (<code>base</code>), more where it climbs
+(<code>rise</code>, extra share per metre up per metre forward): orographic rain on the windward slopes.</li>
+<li>Over the sea it recovers a share of what it misses (<code>recharge</code>); over flat land, slowly
+(<code>evaporation</code>). Behind a ridge, the air is drier: the rain shadow.</li>
+<li>The rain of a place is <code>background</code> mm a year times the air&rsquo;s humidity there (1 = saturated:
+frontal rain) plus <code>orographic</code> mm times what the air dropped there, measured against the most
+exposed 3 % of the land. Both are smoothed by <code>smoothing</code> km.</li>
+</ol>
+
+<p>Without <code>rain</code> settings the defaults are neutral, for every world to set its own: the wind from
+the west, as the westerlies of the middle latitudes blow; 1,000 mm of <code>background</code>, about the
+world&rsquo;s mean (2.6 mm a day; Adler et al. 2003, the GPCP analysis); and 1,000 mm of <code>orographic</code>,
+which doubles the rain on the most exposed windward slopes, a moderate case of what mountain
+ranges show (Roe 2005).</p>
+
+<p align="center">
+  <img alt="A cut from west to east through the highest peak: above, the yearly rain climbs from about 1500 mm on the west coast to about 2400 mm on the windward slope, then falls behind the ridge to about 600 mm in the rain shadow; below, the ground rises over a low hill to the 2,550-metre peak and falls to the east coast, with temperatures of 9, 10, −5 and 12 °C along the way" src="images/transect.svg" width="880">
+</p>
+
+<p>The same island with the wind turned round: everything else is the same, so the wet side and the
+rain shadow swap places.</p>
+
+<p align="center">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/wind-dark.png">
+  <img alt="Two maps of the island's yearly rain. With the wind from the west the western half is wet and the east is dry; with the wind from the east, the eastern side of the ridge is wet and the western lowlands are dry" src="images/wind-light.png" width="880">
+</picture>
+</p>
+
+<h2 id="river-valleys-and-coasts">River valleys and coasts</h2>
+
+<p>The area that drains through every land cell is followed downhill, from the highest cell to the
+lowest: each cell sends its water to the lowest of its eight neighbours. When the world has a
+<code>drainage_area</code> (the terrain&rsquo;s <code>erosion</code> rule publishes it, with hollows filled so all water
+reaches the sea), that one is used instead, so the climate&rsquo;s rivers are the terrain&rsquo;s: every cell
+of the climate&rsquo;s grid takes the largest area of the cells inside it, so a river one fine cell wide
+is not lost on a coarser grid. A cell is on a <strong>river valley</strong> when it drains more than <code>river_area</code> km²
+and is flatter than <code>river_slope</code>; the valley floor is widened by two cells. A cell is on the
+<strong>coast</strong> when it is within <code>coast_reach</code> km of the sea, lower than <code>coast_low</code> metres and flatter
+than <code>coast_slope</code>.</p>
+
+<p>On the <a href="#biomes">biome map</a> below, <code>riverside</code> follows the island&rsquo;s three valleys down to the sea,
+and <code>coast</code> is the thin low rim where the land meets it.</p>
+
+<h2 id="biomes">Biomes</h2>
+
+<p>With heat and rain known, choosing the biome is a matter of rules, like a field guide: &ldquo;colder
+than −2.5 °C: snow; steeper than 0.6: rock; otherwise, if it rains more than 1000 mm: forest…&rdquo;.
+Every land cell gets the first biome whose conditions hold, in the order written:</p>
+<pre><code class="language-yaml"><span class="nt">biomes</span><span class="p">:</span>
+  - {<span class="nt">biome</span><span class="p">:</span> <span class="nt">snow, when</span><span class="p">:</span> {<span class="nt">temperature</span><span class="p">:</span> {<span class="nt">max</span><span class="p">:</span> -<span class="m">2.5</span>}}}
+  - {<span class="nt">biome</span><span class="p">:</span> <span class="nt">rock, when</span><span class="p">:</span> {<span class="nt">slope</span><span class="p">:</span> {<span class="nt">min</span><span class="p">:</span> <span class="m">0.6</span>}}}
+  - {<span class="nt">biome</span><span class="p">:</span> <span class="nt">riverside, when</span><span class="p">:</span> {<span class="nt">river</span><span class="p">:</span> <span class="kc">true</span>}}
+  - {<span class="nt">biome</span><span class="p">:</span> <span class="nt">coast, when</span><span class="p">:</span> {<span class="nt">coast</span><span class="p">:</span> <span class="kc">true</span>}}
+  - {<span class="nt">biome</span><span class="p">:</span> <span class="nt">forest, when</span><span class="p">:</span> {<span class="nt">temperature</span><span class="p">:</span> {<span class="nt">max</span><span class="p">:</span> <span class="nt">11}, precipitation</span><span class="p">:</span> {<span class="nt">min</span><span class="p">:</span> <span class="m">1000</span>}}}
+  - {<span class="nt">biome</span><span class="p">:</span> <span class="l">steppe}                      </span> <span class="c"># no conditions: everything left</span>
+</code></pre>
+
+<p>Conditions use go-simulator&rsquo;s <a href="https://github.com/akrck02/go-simulator/blob/main/docs/5-reference/1-vocabulary-and-conditions.md#conditions" target="_blank">condition language</a>
+over the facts of a cell: <code>temperature</code>, <code>precipitation</code> (mm), <code>height</code> (m), <code>slope</code> (rise over
+run), <code>river_area</code> (km² drained), and the yes/no facts <code>river</code> and <code>coast</code>. An unknown fact is an
+error.</p>
+
+<p align="center">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/biomes-dark.png">
+  <img alt="Map of the made-up island's biomes: snow on the top of the ridge, rock on its steep sides, forest on the wet western slopes, steppe in the dry east, meadow over most of the lowlands, riverside along three valleys, a thin coast, and the old wood in the west" src="images/biomes-light.png" width="560">
+</picture>
+</p>
+
+<p>The island&rsquo;s table is the one above with a <code>meadow</code> rule (<code>precipitation: {min: 750}</code>) before
+<code>steppe</code>. Placing every place by its rain and temperature shows the table at work: each biome fills
+the box its conditions leave it.</p>
+
+<p align="center">
+  <img alt="A chart of the island's places by yearly rain (across) and mean temperature (up), coloured by biome: snow below −2.5 °C, forest below 11 °C where it rains at least 1000 mm, meadow from 750 mm, and steppe in the driest corner. Rock, riverside, coast and the old wood are left out, as they follow slope, rivers, the sea or a region rather than the climate" src="images/biome-chart.svg" width="880">
+</p>
+
+<h2 id="regions">Regions</h2>
+
+<p>Regions give areas of the map a biome of their own, over the table: an <code>ellipse</code> (<code>centre</code> and
+<code>radii</code>, km east and north) or a <code>polygon</code>, with their own conditions. <code>ragged</code> (a share of the
+ellipse&rsquo;s size) makes the edge irregular, like a real forest&rsquo;s, with smooth value noise that is the
+same for the same place.</p>
+<pre><code class="language-yaml"><span class="nt">regions</span><span class="p">:</span>
+  - {<span class="nt">biome</span><span class="p">:</span> <span class="nt">old wood, ellipse</span><span class="p">:</span> {<span class="nt">centre</span><span class="p">:</span> <span class="nt">[3, 6], radii</span><span class="p">:</span> <span class="nt">[2, 1.5]}, ragged</span><span class="p">:</span> <span class="nt">0.15, when</span><span class="p">:</span> {<span class="nt">height</span><span class="p">:</span> {<span class="nt">min</span><span class="p">:</span> <span class="m">150</span>}}}
+</code></pre>
+
+<p align="center">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/regions-dark.png">
+  <img alt="Two maps of the island's biomes: with the biome table only, the western hill is forest and meadow; with the region, an old wood with a slightly ragged edge takes over the ellipse drawn around the hill, wherever the ground is at least 150 metres high" src="images/regions-light.png" width="880">
+</picture>
+</p>
+
+<h2 id="seasons">Seasons</h2>
+
+<p>The yearly mean is not the whole story when you watch a scene: snow comes down in winter and
+leaves turn in autumn. The <code>seasons</code> rule turns the year on any clock: the year lasts <code>year_length</code> units of the stage&rsquo;s
+time (months on a stepped clock, seconds on a real-time one), and <code>warmest</code> says when in the year
+it is warmest (a share: 0.35 is a little past a third). The temperature swings <code>amplitude</code> °C
+around the yearly mean, so the snow line, where the season&rsquo;s temperature falls below <code>snow_at</code>,
+climbs in summer and comes down in winter (with <code>snow_blend</code> metres of fade). Foliage takes the
+colour of the season from <code>foliage</code> stops (<code>{at, color, amount}</code>), interpolated around the year.</p>
+
+<p>It changes the environment (<code>snow</code> and <code>foliage_tint</code>); go-renderer draws snow on surfaces that
+face up and tints materials marked as foliage.</p>
+
+<p align="center">
+  <img alt="A year of months: the snow line is lowest, at about 620 metres, at the start of the year, climbs to about 3,080 metres, above the 2,550-metre peak, a little past the middle, and comes down again; below, the foliage tint goes from a brownish winter colour through spring green and no tint in summer to orange in autumn, its strip taller where the leaves take more of it" src="images/year.svg" width="880">
+</p>
+
+<table>
+<tr>
+<th width="50%">Winter</th>
+<th width="50%">Summer</th>
+</tr>
+<tr>
+<td><img alt="The made-up island in the viewer in winter: seasonal snow covers the ridge from about 600 metres up" src="images/winter.png"></td>
+<td><img alt="The same island in summer: the seasonal snow is gone; only the snow biome on top of the ridge is white" src="images/summer.png"></td>
+</tr>
+</table>
+
+<p>The <code>snow</code> biome and the season&rsquo;s snow are two different things: the biome is where the yearly mean
+is cold enough (a colour of the terrain, the same all year), the season&rsquo;s snow is drawn on top of
+everything above the snow line of the moment.</p>
+
+<h2 id="use">Use</h2>
+<pre><code class="language-bash"><span class="nb">cd</span> ../go-simulator <span class="o">&amp;&amp;</span> go run ./cmd/simulate -rules climate.yaml -output results
+</code></pre>
+
+<p>The <a href="https://github.com/akrck02/go-simulator-flora" target="_blank">flora plugin</a> reads the fields from the world to
+grow vegetation.</p>
+
+<p>For <a href="https://github.com/akrck02/go-scene-builder" target="_blank">go-scene-builder</a>, which colours the terrain and sows
+each biome&rsquo;s vegetation from a layer (<code>-layer biome=biomes.json</code>), give the rule a <code>layer</code>:</p>
+<pre><code class="language-yaml">- <span class="nt">rule</span><span class="p">:</span> <span class="l">climate</span>
+  <span class="nt">with</span><span class="p">:</span> {<span class="nt">relief</span><span class="p">:</span> <span class="nt">relieve.json, origin</span><span class="p">:</span> <span class="nt">[3, 2], layer</span><span class="p">:</span> <span class="l">biomes.json, …}</span>
+</code></pre>
+
+<p>It saves <code>biomes.json</code> and <code>biomes.f32</code> once, at the start, next to the rules file (or where the path
+says). The grids go-simulator saves in its snapshots will not do for this: their coordinates are the
+world&rsquo;s x and z, which move with <code>origin</code>, and the names of the biomes are not in them (they travel in
+the <code>biomes</code> event). The layer is in the relief&rsquo;s own kilometres east and north, like the scene
+builder&rsquo;s map and relief, and carries the names as <code>labels</code>; the sea is −1, with no name. <a href="./getting-started">Getting started</a> has a whole rules file
+and the way to the viewer.</p>
+
+<h2 id="references">References</h2>
+
+<ul>
+<li>Adler, R. F. et al. (2003). The version-2 Global Precipitation Climatology Project (GPCP) monthly
+precipitation analysis (1979–present). <em>Journal of Hydrometeorology</em> 4.</li>
+<li>Roe, G. H. (2005). Orographic precipitation. <em>Annual Review of Earth and Planetary Sciences</em> 33.</li>
+</ul>
