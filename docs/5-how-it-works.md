@@ -8,10 +8,10 @@
 
 go-simulator is the host. It keeps the world (its entities, fields and environment) and moves the
 clock. The climate plugin is a separate program the host starts; they talk over standard input and
-output (go-simulator's [protocol](https://github.com/akrck02/go-simulator/blob/main/docs/protocol.md)).
+output (go-simulator's [protocol](https://github.com/akrck02/go-simulator/blob/main/docs/5-reference/2-protocol.md)).
 
 - At the start the plugin **describes** itself: its two rules, their parameters, what each one
-  reads and what it writes. That description is also where the [rules reference](rules.md) comes
+  reads and what it writes. That description is also where the [rules reference](6-rules-reference.md) comes
   from.
 - `climate` reads nothing from other plugins. It loads the relief named in its parameters and
   writes the fields `temperature`, `precipitation` and `biome`, and the `biomes` event with the
@@ -20,9 +20,9 @@ output (go-simulator's [protocol](https://github.com/akrck02/go-simulator/blob/m
   tint (`foliage_tint`).
 
 A plugin never touches the renderer: it reads its copy of the world and answers with changes
-(go-simulator's [writing plugins](https://github.com/akrck02/go-simulator/blob/main/docs/writing-plugins.md)).
+(go-simulator's [writing plugins](https://github.com/akrck02/go-simulator/blob/main/docs/4-guides/4-writing-plugins.md)).
 Fields use physical units and shapes world units, as go-simulator's
-[vocabulary](https://github.com/akrck02/go-simulator/blob/main/docs/vocabulary.md) lists. Other
+[vocabulary](https://github.com/akrck02/go-simulator/blob/main/docs/5-reference/1-vocabulary-and-conditions.md) lists. Other
 plugins read the fields from the world instead of working the climate out again.
 
 ## What happens at the start and every step
@@ -48,7 +48,7 @@ Both work on any clock: a stage of months with `year_length: 12`, or a real-time
 The pictures of the made-up island in these pages were drawn from the plugin's own answers. A small
 throwaway program, kept outside the repository, wrote a made-up relief (an island 20 km by 15 km,
 with a ridge in the east, a hill in the west and three valleys), ran the real plugin inside a
-go-simulator host with the rules file in [getting started](getting-started.md#a-rules-file), read
+go-simulator host with the rules file in [getting started](3-getting-started.md#a-rules-file), read
 back the three fields and the environment after every step of the year, and drew them: the maps,
 the cut across the island, the year of seasons and the chart of biomes. The map with the wind from
 the east and the one without the region are the same run with `wind_from: 90`, or with no
@@ -61,5 +61,5 @@ built a scene from the relief coloured by the `biome` snapshot, and the viewer c
 the dark version of the picture at the top of the README. The diagrams (how it fits, the model, the
 steps) were drawn by hand in the same style.
 
-The picture of the example island at the top of [the climate model](model.md) came with the
+The picture of the example island at the top of [the climate model](4-the-model.md) came with the
 repository and was kept as it was.

@@ -98,7 +98,7 @@ Run the rules file without a window and go-simulator saves the fields as grids:
 cd ../go-simulator && go run ./cmd/simulate -rules climate.yaml -output results
 ```
 
-[More on getting started →](docs/getting-started.md)
+[More on getting started →](docs/3-getting-started.md)
 
 ## 🔍 How it works
 
@@ -109,14 +109,14 @@ cd ../go-simulator && go run ./cmd/simulate -rules climate.yaml -output results
 go-simulator keeps the world and moves the clock. The `climate` rule works the climate out once, at
 the start, and publishes it as fields of the world; the `seasons` rule answers every step with the
 season's snow line and foliage tint. The plugin never touches the renderer.
-[More on how it works →](docs/how-it-works.md)
+[More on how it works →](docs/5-how-it-works.md)
 
 ## 📚 Documentation
 
 | | |
 |---|---|
-| [The climate quest](docs/quest.md) | Give an island its weather in 5 levels. |
-| [Getting started](docs/getting-started.md) | The folders it needs, a whole rules file, running it without a window and in the viewer, the tests. |
-| [The climate model](docs/model.md) | How temperature, rain, river valleys, coasts, biomes, regions and seasons are worked out, with pictures. |
-| [How it works](docs/how-it-works.md) | How the plugin fits go-simulator, what happens at the start and every step, and how the pictures were made. |
-| [Rules reference](docs/rules.md) | The `climate` and `seasons` rules and every parameter, generated from the plugin's own description. |
+| [The climate quest](docs/2-the-quest.md) | Give an island its weather in 5 levels. |
+| [Getting started](docs/3-getting-started.md) | The folders it needs, a whole rules file, running it without a window and in the viewer, the tests. |
+| [The climate model](docs/4-the-model.md) | How temperature, rain, river valleys, coasts, biomes, regions and seasons are worked out, with pictures. |
+| [How it works](docs/5-how-it-works.md) | How the plugin fits go-simulator, what happens at the start and every step, and how the pictures were made. |
+| [Rules reference](docs/6-rules-reference.md) | The `climate` and `seasons` rules and every parameter, generated from the plugin's own description. |
