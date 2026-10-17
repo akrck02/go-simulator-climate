@@ -31,7 +31,7 @@ below), and when that ground changes, because the terrain's `erosion` rule moved
 worked out again in the step after and published again.
 
 The maps and charts below are of a made-up island, 20 km by 15 km, with a ridge of about 2,550
-metres in the east, run with the rules file in [getting started](getting-started.md#a-rules-file).
+metres in the east, run with the rules file in [getting started](3-getting-started.md#a-rules-file).
 
 ## Temperature
 
@@ -125,7 +125,7 @@ biomes:
   - {biome: steppe}                       # no conditions: everything left
 ```
 
-Conditions use go-simulator's [condition language](https://github.com/akrck02/go-simulator/blob/main/docs/vocabulary.md#conditions)
+Conditions use go-simulator's [condition language](https://github.com/akrck02/go-simulator/blob/main/docs/5-reference/1-vocabulary-and-conditions.md#conditions)
 over the facts of a cell: `temperature`, `precipitation` (mm), `height` (m), `slope` (rise over
 run), `river_area` (km² drained), and the yes/no facts `river` and `coast`. An unknown fact is an
 error.
@@ -217,7 +217,7 @@ It saves `biomes.json` and `biomes.f32` once, at the start, next to the rules fi
 says). The grids go-simulator saves in its snapshots will not do for this: their coordinates are the
 world's x and z, which move with `origin`, and the names of the biomes are not in them (they travel in
 the `biomes` event). The layer is in the relief's own kilometres east and north, like the scene
-builder's map and relief, and carries the names as `labels`; the sea is −1, with no name. [Getting started](getting-started.md) has a whole rules file
+builder's map and relief, and carries the names as `labels`; the sea is −1, with no name. [Getting started](3-getting-started.md) has a whole rules file
 and the way to the viewer.
 
 ## References
