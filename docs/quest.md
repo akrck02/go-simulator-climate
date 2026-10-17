@@ -169,8 +169,7 @@ In the climate rule, a west wind, and biomes by rain (millimetres a year):
 ```
 
 `wind_from: 270` is a wind from the west; `orographic` is how much more rain the climb brings.
-Add `precipitation` to `snapshot_fields` to see the rain itself. (From here on, `temperature` is
-`{sea_level: 12, lapse: 6.5}` and snow below 6 °C.)
+Add `precipitation` to `snapshot_fields` to see the rain itself.
 
 #### Checkpoint
 
