@@ -15,6 +15,7 @@ jobs:
           title: "Go Climate Simulator"
           description: "The climate plugin of go-simulator: weather, biomes and seasons"
           logo: "./docs/images/logo.svg"
+          accent: "#4FA3E0"
           path: "./docs"
           isObsidianProject: false
           showFooter: true
