@@ -36,7 +36,7 @@ terrain quest's `island/main.go`.)
 
 ### Looking at the biomes
 
-The climate rule can save its biomes as a **layer** that go-scene-builder colours the terrain with.
+The climate rule can save its biomes as a **layer** that Go Scene Builder colours the terrain with.
 Two small files, made once. `empty.geojson`, a map with nothing on it:
 
 ```json
@@ -332,7 +332,7 @@ the peak. `-advance 26` starts in summer.
 Fill the forest with **trees**: firs and oaks in the forest, oaks in the old wood and along the
 rivers, and watch them turn **orange in autumn**.
 
-> **Hint:** go-scene-builder sows models over a biome: `terrain.biomes.<name>.decorate` with the
+> **Hint:** Go Scene Builder sows models over a biome: `terrain.biomes.<name>.decorate` with the
 > `scatter` recipe, and a model library. A part with `material: {foliage: true}` takes the
 > seasons' tint.
 
@@ -398,7 +398,7 @@ wood the story needed, and a year that turns.
 | Everything is one biome | The thresholds miss your island: snapshot `temperature` and `precipitation` and look at their range |
 | The layer does not line up with the island | Use `origin: [0, 0]` with a snapshot of the terrain plugin, or save the layer with `layer:` rather than using the snapshot's `year 1 biome` |
 | No snow moves live | The `seasons` rule needs the month clock with a `pace`, and the scene must have ground facing up |
-| `pkg-config: geos not found` | GEOS is needed by go-scene-builder |
+| `pkg-config: geos not found` | GEOS is needed by Go Scene Builder |
 
 ---
 

@@ -3,7 +3,7 @@
 Version 1.0.0, protocol 2. Yearly temperature and rain over a relief, the biome of every place, and the turning seasons.
 
 This reference is generated from what the plugin itself tells the host (the `describe` message), so it always
-matches the code. Parameters go under `with:` in a rules file; see go-simulator's
+matches the code. Parameters go under `with:` in a rules file; see Go Simulator's
 [rules file reference](https://github.com/akrck02/go-simulator/blob/main/docs/4-guides/1-rules-files.md).
 
 | Rule | What it does |
@@ -28,7 +28,7 @@ Works out temperature (fields: temperature, °C), rain (precipitation, mm a year
 | `terrain` | map |  | {river_area: km², river_slope, coast_reach: km, coast_low: m, coast_slope} |
 | `biomes` | list |  | rules: [{biome, when: {temperature, precipitation, height, slope: {min, max}, river, coast}}] |
 | `regions` | list |  | [{biome, ellipse: {centre, radii} \| polygon, when}]: the world's own biomes |
-| `layer` | text |  | biomes.json: also save the biomes as a layer for go-scene-builder (-layer biome=…), with their names, in km east and north |
+| `layer` | text |  | biomes.json: also save the biomes as a layer for Go Scene Builder (-layer biome=…), with their names, in km east and north |
 
 ## `seasons`
 

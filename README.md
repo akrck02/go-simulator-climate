@@ -4,7 +4,7 @@
 
 # Go climate simulator
 
-**The climate and the biomes of a relief, as a plugin for [go-simulator](https://github.com/akrck02/go-simulator).**
+**The climate and the biomes of a relief, as a plugin for [Go Simulator](https://github.com/akrck02/go-simulator).**
 Temperature falls with height, moist wind drops its rain on the slopes it climbs and leaves a rain
 shadow behind, and biome rules over temperature, rain, slope, rivers and coast give every place its
 biome. A `seasons` rule turns the year: snow line and foliage colour.
@@ -31,11 +31,11 @@ reviewed it line by line. Treat it as a working draft, not as code I vouch for.
 <p align="center">
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/images/hero-dark.png">
-  <img alt="A made-up island in go-simulator's viewer in winter: snow on the high ridge in the east, forest on the wet western slopes, steppe in the dry east, meadows, river valleys and an old wood" src="docs/images/hero-light.png" width="720">
+  <img alt="A made-up island in Go Simulator's viewer in winter: snow on the high ridge in the east, forest on the wet western slopes, steppe in the dry east, meadows, river valleys and an old wood" src="docs/images/hero-light.png" width="720">
 </picture>
 </p>
 
-<p align="center"><sub>A made-up island in winter, in go-simulator's viewer: the biomes this plugin chose, and the snow of the season.</sub></p>
+<p align="center"><sub>A made-up island in winter, in Go Simulator's viewer: the biomes this plugin chose, and the snow of the season.</sub></p>
 
 ## ✨ What it looks like
 
@@ -77,8 +77,8 @@ reviewed it line by line. Treat it as a working draft, not as code I vouch for.
 
 ## 🚀 Quick start
 
-Clone [go-simulator](https://github.com/akrck02/go-simulator), go-renderer and
-[go-scene-builder](https://github.com/akrck02/go-scene-builder) next to this repository. In a rules
+Clone [Go Simulator](https://github.com/akrck02/go-simulator), Go Renderer and
+[Go Scene Builder](https://github.com/akrck02/go-scene-builder) next to this repository. In a rules
 file, the climate of a relief is one rule:
 
 ```yaml
@@ -94,7 +94,7 @@ file, the climate of a relief is one rule:
       - {biome: steppe}
 ```
 
-Run the rules file without a window and go-simulator saves the fields as grids:
+Run the rules file without a window and Go Simulator saves the fields as grids:
 
 ```bash
 cd ../go-simulator && go run ./cmd/simulate -rules climate.yaml -output results
@@ -105,10 +105,10 @@ cd ../go-simulator && go run ./cmd/simulate -rules climate.yaml -output results
 ## 🔍 How it works
 
 <p align="center">
-  <img alt="The rules file and the relief go into go-simulator, the host; the host starts and steps the climate plugin, and the plugin answers with changes: the climate rule once, with the temperature, precipitation and biome fields and the biomes event; the seasons rule every step, with the snow line and foliage tint. Without a window the fields are saved as grids; go-scene-builder and the flora plugin read them, and go-renderer draws the season in the viewer" src="docs/images/how-it-works.svg" width="880">
+  <img alt="The rules file and the relief go into Go Simulator, the host; the host starts and steps the climate plugin, and the plugin answers with changes: the climate rule once, with the temperature, precipitation and biome fields and the biomes event; the seasons rule every step, with the snow line and foliage tint. Without a window the fields are saved as grids; Go Scene Builder and the flora plugin read them, and Go Renderer draws the season in the viewer" src="docs/images/how-it-works.svg" width="880">
 </p>
 
-go-simulator keeps the world and moves the clock. The `climate` rule works the climate out once, at
+Go Simulator keeps the world and moves the clock. The `climate` rule works the climate out once, at
 the start, and publishes it as fields of the world; the `seasons` rule answers every step with the
 season's snow line and foliage tint. The plugin never touches the renderer.
 [More on how it works →](docs/5-how-it-works.md)
@@ -120,5 +120,5 @@ season's snow line and foliage tint. The plugin never touches the renderer.
 | [The climate quest](docs/2-the-quest.md) | Give an island its weather in 5 levels. |
 | [Getting started](docs/3-getting-started.md) | The folders it needs, a whole rules file, running it without a window and in the viewer, the tests. |
 | [The climate model](docs/4-the-model.md) | How temperature, rain, river valleys, coasts, biomes, regions and seasons are worked out, with pictures. |
-| [How it works](docs/5-how-it-works.md) | How the plugin fits go-simulator, what happens at the start and every step, and how the pictures were made. |
+| [How it works](docs/5-how-it-works.md) | How the plugin fits Go Simulator, what happens at the start and every step, and how the pictures were made. |
 | [Rules reference](docs/6-rules-reference.md) | The `climate` and `seasons` rules and every parameter, generated from the plugin's own description. |
