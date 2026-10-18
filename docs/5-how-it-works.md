@@ -1,14 +1,14 @@
 # 🔍 How it works
 
-## How the plugin fits go-simulator
+## How the plugin fits Go Simulator
 
 <p align="center">
-  <img alt="The rules file and the relief go into go-simulator, the host; the host starts and steps the climate plugin, and the plugin answers with changes: the climate rule once, with the temperature, precipitation and biome fields and the biomes event; the seasons rule every step, with the snow line and foliage tint. Without a window the fields are saved as grids; go-scene-builder and the flora plugin read them, and go-renderer draws the season in the viewer" src="images/how-it-works.svg" width="880">
+  <img alt="The rules file and the relief go into Go Simulator, the host; the host starts and steps the climate plugin, and the plugin answers with changes: the climate rule once, with the temperature, precipitation and biome fields and the biomes event; the seasons rule every step, with the snow line and foliage tint. Without a window the fields are saved as grids; Go Scene Builder and the flora plugin read them, and Go Renderer draws the season in the viewer" src="images/how-it-works.svg" width="880">
 </p>
 
-go-simulator is the host. It keeps the world (its entities, fields and environment) and moves the
+Go Simulator is the host. It keeps the world (its entities, fields and environment) and moves the
 clock. The climate plugin is a separate program the host starts; they talk over standard input and
-output (go-simulator's [protocol](https://github.com/akrck02/go-simulator/blob/main/docs/5-reference/2-protocol.md)).
+output (Go Simulator's [protocol](https://github.com/akrck02/go-simulator/blob/main/docs/5-reference/2-protocol.md)).
 
 - At the start the plugin **describes** itself: its two rules, their parameters, what each one
   reads and what it writes. That description is also where the [rules reference](6-rules-reference.md) comes
@@ -20,8 +20,8 @@ output (go-simulator's [protocol](https://github.com/akrck02/go-simulator/blob/m
   tint (`foliage_tint`).
 
 A plugin never touches the renderer: it reads its copy of the world and answers with changes
-(go-simulator's [writing plugins](https://github.com/akrck02/go-simulator/blob/main/docs/4-guides/4-writing-plugins.md)).
-Fields use physical units and shapes world units, as go-simulator's
+(Go Simulator's [writing plugins](https://github.com/akrck02/go-simulator/blob/main/docs/4-guides/4-writing-plugins.md)).
+Fields use physical units and shapes world units, as Go Simulator's
 [vocabulary](https://github.com/akrck02/go-simulator/blob/main/docs/5-reference/1-vocabulary-and-conditions.md) lists. Other
 plugins read the fields from the world instead of working the climate out again.
 
@@ -48,14 +48,14 @@ Both work on any clock: a stage of months with `year_length: 12`, or a real-time
 The pictures of the made-up island in these pages were drawn from the plugin's own answers. A small
 throwaway program, kept outside the repository, wrote a made-up relief (an island 20 km by 15 km,
 with a ridge in the east, a hill in the west and three valleys), ran the real plugin inside a
-go-simulator host with the rules file in [getting started](3-getting-started.md#a-rules-file), read
+Go Simulator host with the rules file in [getting started](3-getting-started.md#a-rules-file), read
 back the three fields and the environment after every step of the year, and drew them: the maps,
 the cut across the island, the year of seasons and the chart of biomes. The map with the wind from
 the east and the one without the region are the same run with `wind_from: 90`, or with no
 `regions`. Maps are PNG pictures in a light and a dark version; the charts are SVG with their own
 light and dark colours.
 
-The 3D pictures are go-simulator's viewer: the same rules run with `cmd/simulate`, go-scene-builder
+The 3D pictures are Go Simulator's viewer: the same rules run with `cmd/simulate`, Go Scene Builder
 built a scene from the relief coloured by the `biome` snapshot, and the viewer captured a frame
 (`-capture`) at month 0.25 and month 6.5 (`-advance 1`, `-advance 26`), and at night (`-night`) for
 the dark version of the picture at the top of the README. The diagrams (how it fits, the model, the

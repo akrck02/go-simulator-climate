@@ -125,7 +125,7 @@ biomes:
   - {biome: steppe}                       # no conditions: everything left
 ```
 
-Conditions use go-simulator's [condition language](https://github.com/akrck02/go-simulator/blob/main/docs/5-reference/1-vocabulary-and-conditions.md#conditions)
+Conditions use Go Simulator's [condition language](https://github.com/akrck02/go-simulator/blob/main/docs/5-reference/1-vocabulary-and-conditions.md#conditions)
 over the facts of a cell: `temperature`, `precipitation` (mm), `height` (m), `slope` (rise over
 run), `river_area` (km² drained), and the yes/no facts `river` and `coast`. An unknown fact is an
 error.
@@ -174,7 +174,7 @@ around the yearly mean, so the snow line, where the season's temperature falls b
 climbs in summer and comes down in winter (with `snow_blend` metres of fade). Foliage takes the
 colour of the season from `foliage` stops (`{at, color, amount}`), interpolated around the year.
 
-It changes the environment (`snow` and `foliage_tint`); go-renderer draws snow on surfaces that
+It changes the environment (`snow` and `foliage_tint`); Go Renderer draws snow on surfaces that
 face up and tints materials marked as foliage.
 
 <p align="center">
@@ -205,7 +205,7 @@ cd ../go-simulator && go run ./cmd/simulate -rules climate.yaml -output results
 The [flora plugin](https://github.com/akrck02/go-simulator-flora) reads the fields from the world to
 grow vegetation.
 
-For [go-scene-builder](https://github.com/akrck02/go-scene-builder), which colours the terrain and sows
+For [Go Scene Builder](https://github.com/akrck02/go-scene-builder), which colours the terrain and sows
 each biome's vegetation from a layer (`-layer biome=biomes.json`), give the rule a `layer`:
 
 ```yaml
@@ -214,7 +214,7 @@ each biome's vegetation from a layer (`-layer biome=biomes.json`), give the rule
 ```
 
 It saves `biomes.json` and `biomes.f32` once, at the start, next to the rules file (or where the path
-says). The grids go-simulator saves in its snapshots will not do for this: their coordinates are the
+says). The grids Go Simulator saves in its snapshots will not do for this: their coordinates are the
 world's x and z, which move with `origin`, and the names of the biomes are not in them (they travel in
 the `biomes` event). The layer is in the relief's own kilometres east and north, like the scene
 builder's map and relief, and carries the names as `labels`; the sea is −1, with no name. [Getting started](3-getting-started.md) has a whole rules file
