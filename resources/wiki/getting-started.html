@@ -2,8 +2,8 @@
 
 <h2 id="the-folders-it-needs">The folders it needs</h2>
 
-<p>The plugin is developed next to the projects it uses: <code>go.mod</code> replaces go-simulator, go-renderer
-and go-scene-builder with the folders beside this one. Clone them side by side:</p>
+<p>The plugin is developed next to the projects it uses: <code>go.mod</code> replaces Go Simulator, Go Renderer
+and Go Scene Builder with the folders beside this one. Clone them side by side:</p>
 <pre><code>go-renderer/
 go-scene-builder/
 go-simulator/
@@ -12,7 +12,7 @@ go-simulator-climate/   ← this repository
 
 <h2 id="a-rules-file">A rules file</h2>
 
-<p>The plugin needs one thing from your world: a relief, in go-scene-builder&rsquo;s format
+<p>The plugin needs one thing from your world: a relief, in Go Scene Builder&rsquo;s format
 (<code>relieve.json</code>, with the heights in <code>relieve.f32</code> next to it, in kilometres east and north). The
 rest is numbers in a rules file. This one, <code>climate.yaml</code> in the <code>go-simulator</code> folder, is the one
 the pictures in these pages were made with, on a made-up island:</p>
@@ -61,7 +61,7 @@ the pictures in these pages were made with, on a made-up island:</p>
 
 <p>The plugin starts with <code>go run</code> from this repository, so it needs no installing. The stage is a
 year of months, a quarter of a month a step; <code>pace</code> is how many real seconds a step takes in the
-viewer. Every key is in go-simulator&rsquo;s
+viewer. Every key is in Go Simulator&rsquo;s
 <a href="https://github.com/akrck02/go-simulator/blob/main/docs/4-guides/1-rules-files.md" target="_blank">rules files</a>, and every
 parameter of the two rules in the <a href="./rules-reference">rules reference</a>.</p>
 
@@ -69,14 +69,14 @@ parameter of the two rules in the <a href="./rules-reference">rules reference</a
 <pre><code class="language-bash"><span class="nb">cd</span> ../go-simulator <span class="o">&amp;&amp;</span> go run ./cmd/simulate -rules climate.yaml -output results
 </code></pre>
 
-<p>go-simulator runs the year as fast as it can and saves, in <code>results/</code>, the three fields as grids
+<p>Go Simulator runs the year as fast as it can and saves, in <code>results/</code>, the three fields as grids
 (<code>year 0 biome.json</code> with <code>year 0 biome.f32</code> next to it, and so on), and every event in
 <code>events.jsonl</code>, among them the <code>biomes</code> event with the name of every biome:</p>
 <pre><code class="language-json"><span class="p">{</span><span class="nt">&#34;data&#34;</span><span class="p">:{</span><span class="nt">&#34;names&#34;</span><span class="p">:[</span><span class="s2">&#34;snow&#34;</span><span class="p">,</span><span class="s2">&#34;rock&#34;</span><span class="p">,</span><span class="s2">&#34;riverside&#34;</span><span class="p">,</span><span class="s2">&#34;coast&#34;</span><span class="p">,</span><span class="s2">&#34;forest&#34;</span><span class="p">,</span><span class="s2">&#34;meadow&#34;</span><span class="p">,</span><span class="s2">&#34;steppe&#34;</span><span class="p">,</span><span class="s2">&#34;old wood&#34;</span><span class="p">]},</span><span class="nt">&#34;name&#34;</span><span class="p">:</span><span class="s2">&#34;biomes&#34;</span><span class="p">,</span><span class="nt">&#34;origin&#34;</span><span class="p">:</span><span class="s2">&#34;climate&#34;</span><span class="p">,</span><span class="nt">&#34;stage&#34;</span><span class="p">:</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="nt">&#34;time&#34;</span><span class="p">:</span><span class="mi">0</span><span class="p">}</span>
 </code></pre>
 
 <p>The <a href="https://github.com/akrck02/go-simulator-flora" target="_blank">flora plugin</a> reads the fields from the world to
-grow vegetation. For <a href="https://github.com/akrck02/go-scene-builder" target="_blank">go-scene-builder</a>, which colours
+grow vegetation. For <a href="https://github.com/akrck02/go-scene-builder" target="_blank">Go Scene Builder</a>, which colours
 the terrain and sows each biome&rsquo;s vegetation from a layer (<code>-layer biome=…</code>), add <code>layer:
 biomes.json</code> to the climate rule: it saves <code>biomes.json</code> and <code>biomes.f32</code> next to the rules file,
 with the biome names as <code>labels</code> and in the relief&rsquo;s kilometres east and north, so the layer lines
@@ -94,12 +94,12 @@ up with the relief whatever the <code>origin</code> (see <a href="./the-model">t
 <td><img alt="The same island in summer: the seasonal snow is gone; only the snow biome high on the ridge stays white" src="./images/summer.png"></td>
 </tr>
 <tr>
-<td colspan="2" align="center">The same scene, a season apart: the <code>seasons</code> rule moves the snow line, and go-renderer draws snow on the ground that faces up above it.</td>
+<td colspan="2" align="center">The same scene, a season apart: the <code>seasons</code> rule moves the snow line, and Go Renderer draws snow on the ground that faces up above it.</td>
 </tr>
 </table>
 
-<p>To see the island in 3D, go-scene-builder builds a scene from the relief, coloured by the biomes,
-and go-simulator&rsquo;s viewer shows it while the rules run:</p>
+<p>To see the island in 3D, Go Scene Builder builds a scene from the relief, coloured by the biomes,
+and Go Simulator&rsquo;s viewer shows it while the rules run:</p>
 <pre><code class="language-bash"><span class="nb">cd</span> ../go-scene-builder
 go run ./cmd/build-scene -map empty.geojson -relief relieve.json -layer <span class="nv">biome</span><span class="o">=</span>biomes.json -style style.yaml -out island.glb
 <span class="nb">cd</span> ../go-simulator
@@ -107,7 +107,7 @@ go run ./cmd/simulator -rules climate.yaml island.glb
 go run ./cmd/simulator -rules climate.yaml -advance <span class="m">26</span> -capture summer.png island.glb
 </code></pre>
 
-<p>The style gives every biome a colour under <code>terrain.biomes</code> (see go-scene-builder&rsquo;s
+<p>The style gives every biome a colour under <code>terrain.biomes</code> (see Go Scene Builder&rsquo;s
 <a href="https://github.com/akrck02/go-scene-builder/blob/master/docs/6-decoration.md#biomes" target="_blank">decoration</a>), and
 <code>empty.geojson</code> is a map with no features. <code>-advance 26</code> steps the year 26 times before showing,
 to month 6.5.</p>
@@ -124,6 +124,6 @@ go <span class="nb">test</span> ./...
 <p>The tests build a round island with a ridge running north to south and check that the ridge is as
 cold as its height says, that the slope facing the west wind is wetter than the other, that snow,
 sea and a region&rsquo;s biome land where they should, and that the seasons move the snow line and the
-foliage around the year. Others read the biome layer back with go-scene-builder&rsquo;s own loader, with
+foliage around the year. Others read the biome layer back with Go Scene Builder&rsquo;s own loader, with
 an origin away from zero, work the climate out on the world&rsquo;s ground and drainage and again when
 that ground rises, and check that every rule describes its contracts.</p>

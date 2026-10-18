@@ -146,7 +146,7 @@ Every land cell gets the first biome whose conditions hold, in the order written
   - {<span class="nt">biome</span><span class="p">:</span> <span class="l">steppe}                      </span> <span class="c"># no conditions: everything left</span>
 </code></pre>
 
-<p>Conditions use go-simulator&rsquo;s <a href="https://github.com/akrck02/go-simulator/blob/main/docs/5-reference/1-vocabulary-and-conditions.md#conditions" target="_blank">condition language</a>
+<p>Conditions use Go Simulator&rsquo;s <a href="https://github.com/akrck02/go-simulator/blob/main/docs/5-reference/1-vocabulary-and-conditions.md#conditions" target="_blank">condition language</a>
 over the facts of a cell: <code>temperature</code>, <code>precipitation</code> (mm), <code>height</code> (m), <code>slope</code> (rise over
 run), <code>river_area</code> (km² drained), and the yes/no facts <code>river</code> and <code>coast</code>. An unknown fact is an
 error.</p>
@@ -193,7 +193,7 @@ around the yearly mean, so the snow line, where the season&rsquo;s temperature f
 climbs in summer and comes down in winter (with <code>snow_blend</code> metres of fade). Foliage takes the
 colour of the season from <code>foliage</code> stops (<code>{at, color, amount}</code>), interpolated around the year.</p>
 
-<p>It changes the environment (<code>snow</code> and <code>foliage_tint</code>); go-renderer draws snow on surfaces that
+<p>It changes the environment (<code>snow</code> and <code>foliage_tint</code>); Go Renderer draws snow on surfaces that
 face up and tints materials marked as foliage.</p>
 
 <p align="center">
@@ -222,14 +222,14 @@ everything above the snow line of the moment.</p>
 <p>The <a href="https://github.com/akrck02/go-simulator-flora" target="_blank">flora plugin</a> reads the fields from the world to
 grow vegetation.</p>
 
-<p>For <a href="https://github.com/akrck02/go-scene-builder" target="_blank">go-scene-builder</a>, which colours the terrain and sows
+<p>For <a href="https://github.com/akrck02/go-scene-builder" target="_blank">Go Scene Builder</a>, which colours the terrain and sows
 each biome&rsquo;s vegetation from a layer (<code>-layer biome=biomes.json</code>), give the rule a <code>layer</code>:</p>
 <pre><code class="language-yaml">- <span class="nt">rule</span><span class="p">:</span> <span class="l">climate</span>
   <span class="nt">with</span><span class="p">:</span> {<span class="nt">relief</span><span class="p">:</span> <span class="nt">relieve.json, origin</span><span class="p">:</span> <span class="nt">[3, 2], layer</span><span class="p">:</span> <span class="l">biomes.json, …}</span>
 </code></pre>
 
 <p>It saves <code>biomes.json</code> and <code>biomes.f32</code> once, at the start, next to the rules file (or where the path
-says). The grids go-simulator saves in its snapshots will not do for this: their coordinates are the
+says). The grids Go Simulator saves in its snapshots will not do for this: their coordinates are the
 world&rsquo;s x and z, which move with <code>origin</code>, and the names of the biomes are not in them (they travel in
 the <code>biomes</code> event). The layer is in the relief&rsquo;s own kilometres east and north, like the scene
 builder&rsquo;s map and relief, and carries the names as <code>labels</code>; the sea is −1, with no name. <a href="./getting-started">Getting started</a> has a whole rules file
