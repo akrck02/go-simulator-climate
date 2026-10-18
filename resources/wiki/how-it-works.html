@@ -3,7 +3,7 @@
 <h2 id="how-the-plugin-fits-go-simulator">How the plugin fits go-simulator</h2>
 
 <p align="center">
-  <img alt="The rules file and the relief go into go-simulator, the host; the host starts and steps the climate plugin, and the plugin answers with changes: the climate rule once, with the temperature, precipitation and biome fields and the biomes event; the seasons rule every step, with the snow line and foliage tint. Without a window the fields are saved as grids; go-scene-builder and the flora plugin read them, and go-renderer draws the season in the viewer" src="images/how-it-works.svg" width="880">
+  <img alt="The rules file and the relief go into go-simulator, the host; the host starts and steps the climate plugin, and the plugin answers with changes: the climate rule once, with the temperature, precipitation and biome fields and the biomes event; the seasons rule every step, with the snow line and foliage tint. Without a window the fields are saved as grids; go-scene-builder and the flora plugin read them, and go-renderer draws the season in the viewer" src="./images/how-it-works.svg" width="880">
 </p>
 
 <p>go-simulator is the host. It keeps the world (its entities, fields and environment) and moves the
@@ -30,7 +30,7 @@ plugins read the fields from the world instead of working the climate out again.
 <h2 id="what-happens-at-the-start-and-every-step">What happens at the start and every step</h2>
 
 <p align="center">
-  <img alt="Three lanes over a stage of twelve months, a quarter of a month a step: climate has one block at the start and none after; seasons has a block at every step; a snapshot at month 0 saves the three fields" src="images/step.svg" width="880">
+  <img alt="Three lanes over a stage of twelve months, a quarter of a month a step: climate has one block at the start and none after; seasons has a block at every step; a snapshot at month 0 saves the three fields" src="./images/step.svg" width="880">
 </p>
 
 <ul>
